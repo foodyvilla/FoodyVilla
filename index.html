@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FoodyVilla – Pure Veg | Nagri, Chhattisgarh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@300;400;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#home" class="logo">
+        <div class="logo-icon">🍃</div>
+        <div class="logo-text">
+          <span class="logo-foody">Foody</span><span class="logo-villa">Villa</span>
+          <span class="logo-tag">Pure Veg</span>
+        </div>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-link active">Home</a></li>
+        <li><a href="#menu" class="nav-link">Menu</a></li>
+        <li><a href="#offers" class="nav-link">Offers</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="https://order.foodyvilla.in" target="_blank" class="btn-order-nav">Order Now ↗</a>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home" class="mob-link">Home</a>
+    <a href="#menu" class="mob-link">Menu</a>
+    <a href="#offers" class="mob-link">Offers</a>
+    <a href="#about" class="mob-link">About</a>
+    <a href="#contact" class="mob-link">Contact</a>
+    <a href="https://order.foodyvilla.in" target="_blank" class="mob-order">Order Now ↗</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=1600&q=80" alt="Delicious Indian food" class="hero-img" />
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="veg-badge reveal-up delay-1">
+        <span class="veg-dot"></span> 100% Pure Vegetarian
+      </div>
+      <h1 class="hero-title reveal-up delay-2">
+        Desi Flavours,<br/><em>Chinese Magic</em>
+      </h1>
+      <p class="hero-desc reveal-up delay-3">
+        Authentic Indian &amp; Chinese vegetarian dishes — crafted fresh in Nagri, Chhattisgarh.<br/>
+        Dine-in · Pick-up · Delivery
+      </p>
+      <div class="hero-btns reveal-up delay-4">
+        <a href="#menu" class="btn-primary">Explore Menu</a>
+        <a href="https://order.foodyvilla.in" target="_blank" class="btn-secondary">Order Online ↗</a>
+      </div>
+      <div class="hero-hours reveal-up delay-5">
+        <span class="hours-dot"></span> Open Daily: 11:30 AM – 10:30 PM
+      </div>
+    </div>
+    <div class="hero-floating-badges">
+      <div class="fbadge fbadge-1">🥗 Manchurian</div>
+      <div class="fbadge fbadge-2">🍕 Pizza</div>
+      <div class="fbadge fbadge-3">🍜 Noodles</div>
+    </div>
+  </section>
+
+  <!-- STATS STRIP -->
+  <section class="stats-strip">
+    <div class="stat-item reveal-up">
+      <span class="stat-num" data-target="62">0</span><span class="stat-plus">+</span>
+      <p>Menu Items</p>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item reveal-up delay-1">
+      <span class="stat-num" data-target="10">0</span><span class="stat-plus"></span>
+      <p>Categories</p>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item reveal-up delay-2">
+      <span class="stat-num" data-target="50">0</span><span class="stat-plus">+</span>
+      <p>Starting at ₹</p>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item reveal-up delay-3">
+      <span class="stat-num" data-target="100">0</span><span class="stat-plus">%</span>
+      <p>Pure Veg</p>
+    </div>
+  </section>
+
+  <!-- MENU SECTION -->
+  <section class="menu-section" id="menu">
+    <div class="section-header reveal-up">
+      <p class="section-label">Our Specialities</p>
+      <h2 class="section-title">Crafted with <em>Love & Spice</em></h2>
+      <p class="section-sub">From sizzling starters to hearty mains — all 100% vegetarian</p>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="menu-controls reveal-up">
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-tab active" data-cat="all">All</button>
+        <button class="filter-tab" data-cat="starter">Starter</button>
+        <button class="filter-tab" data-cat="maggi">Maggi</button>
+        <button class="filter-tab" data-cat="noodles">Noodles</button>
+        <button class="filter-tab" data-cat="dosa">Dosa</button>
+        <button class="filter-tab" data-cat="pizza">Pizza</button>
+        <button class="filter-tab" data-cat="sandwich">Sandwich</button>
+        <button class="filter-tab" data-cat="rice">Rice</button>
+        <button class="filter-tab" data-cat="roti">Roti/Naan</button>
+      </div>
+      <div class="menu-search-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="menuSearch" placeholder="Search dishes…" />
+      </div>
+    </div>
+
+    <div class="menu-grid" id="menuGrid">
+
+      <!-- STARTERS -->
+      <div class="food-card reveal-card" data-cat="starter" data-name="Manchurian">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=600&q=80" alt="Manchurian" loading="lazy" />
+          <span class="card-badge bestseller">Bestseller</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Starter</span>
+          <h3>Manchurian</h3>
+          <p>Crispy veg balls in a tangy Indo-Chinese gravy.</p>
+          <div class="card-footer">
+            <span class="card-price">₹80</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="starter" data-name="Gobhi Manchuriyan">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1625398407796-82650a8c135f?w=600&q=80" alt="Gobhi Manchurian" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Starter</span>
+          <h3>Gobhi Manchuriyan</h3>
+          <p>Crispy cauliflower florets tossed in spicy manchurian sauce.</p>
+          <div class="card-footer">
+            <span class="card-price">₹80</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="starter" data-name="Paneer Manchurian">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=600&q=80" alt="Paneer Manchurian" loading="lazy" />
+          <span class="card-badge hot">🔥 Popular</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Starter</span>
+          <h3>Paneer Manchurian</h3>
+          <p>Tender paneer cubes in rich manchurian gravy.</p>
+          <div class="card-footer">
+            <span class="card-price">₹100</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="starter" data-name="Crispy Corn">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1551248429-40975aa4de74?w=600&q=80" alt="Crispy Corn" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Starter</span>
+          <h3>Crispy Corn</h3>
+          <p>Golden fried corn kernels with spices and herbs.</p>
+          <div class="card-footer">
+            <span class="card-price">₹90</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="starter" data-name="Crispy Veg">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1606491048802-8342506d6471?w=600&q=80" alt="Crispy Veg" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Starter</span>
+          <h3>Crispy Veg</h3>
+          <p>Assorted veggies battered and fried to golden perfection.</p>
+          <div class="card-footer">
+            <span class="card-price">₹100</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="starter" data-name="Crunchy Veg">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" alt="Crunchy Veg" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Starter</span>
+          <h3>Crunchy Veg</h3>
+          <p>Mixed vegetables deep-fried with a crunchy coating.</p>
+          <div class="card-footer">
+            <span class="card-price">₹100</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="starter" data-name="Paneer Sutti Butti">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=600&q=80" alt="Paneer Sutti Butti" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Starter</span>
+          <h3>Paneer Sutti Butti</h3>
+          <p>Special house-style crispy paneer preparation.</p>
+          <div class="card-footer">
+            <span class="card-price">₹200</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="starter" data-name="Dragon Paneer">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80" alt="Dragon Paneer" loading="lazy" />
+          <span class="card-badge hot">🔥 Spicy</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Starter</span>
+          <h3>Dragon Paneer</h3>
+          <p>Fiery dragon-sauce coated paneer with bold flavours.</p>
+          <div class="card-footer">
+            <span class="card-price">₹200</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="starter" data-name="Chinese Sizzler">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1555126634-323283e090fa?w=600&q=80" alt="Chinese Sizzler" loading="lazy" />
+          <span class="card-badge chef">Chef's Pick</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Starter</span>
+          <h3>Chinese Sizzler</h3>
+          <p>A theatrical sizzling platter of Indo-Chinese delights.</p>
+          <div class="card-footer">
+            <span class="card-price">₹200</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="starter" data-name="Paneer Popcara">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&q=80" alt="Paneer Popcara" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Starter</span>
+          <h3>Paneer Popcara</h3>
+          <p>Bite-sized crispy paneer popcorn style snacks.</p>
+          <div class="card-footer">
+            <span class="card-price">₹120</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAGGI -->
+      <div class="food-card reveal-card" data-cat="maggi" data-name="Masala Maggi">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=600&q=80" alt="Masala Maggi" loading="lazy" />
+          <span class="card-badge bestseller">Bestseller</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Maggi</span>
+          <h3>Masala Maggi</h3>
+          <p>Classic maggi with extra masala and veggies.</p>
+          <div class="card-footer">
+            <span class="card-price">₹50</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="maggi" data-name="Corn Maggi">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80" alt="Corn Maggi" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Maggi</span>
+          <h3>Corn Maggi</h3>
+          <p>Buttery maggi loaded with sweet corn and spices.</p>
+          <div class="card-footer">
+            <span class="card-price">₹60</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="maggi" data-name="Schezwan Maggi">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1555126634-323283e090fa?w=600&q=80" alt="Schezwan Maggi" loading="lazy" />
+          <span class="card-badge hot">🌶 Spicy</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Maggi</span>
+          <h3>Schezwan Maggi</h3>
+          <p>Maggi tossed in fiery schezwan sauce with veggies.</p>
+          <div class="card-footer">
+            <span class="card-price">₹60</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="maggi" data-name="Paneer Maggi">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=600&q=80" alt="Paneer Maggi" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Maggi</span>
+          <h3>Paneer Maggi</h3>
+          <p>Creamy maggi with soft paneer chunks and herbs.</p>
+          <div class="card-footer">
+            <span class="card-price">₹60</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="maggi" data-name="Cheese Maggi">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=600&q=80" alt="Cheese Maggi" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Maggi</span>
+          <h3>Cheese Maggi</h3>
+          <p>Gooey melted cheese over perfectly cooked masala maggi.</p>
+          <div class="card-footer">
+            <span class="card-price">₹70</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOODLES -->
+      <div class="food-card reveal-card" data-cat="noodles" data-name="Chaumin">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80" alt="Chaumin" loading="lazy" />
+          <span class="card-badge bestseller">Bestseller</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Noodles</span>
+          <h3>Chaumin</h3>
+          <p>Classic stir-fried Chinese noodles with vegetables.</p>
+          <div class="card-footer">
+            <span class="card-price">₹50</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="noodles" data-name="Veh Chaumin">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&q=80" alt="Veh Chaumin" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Noodles</span>
+          <h3>Veh Chaumin</h3>
+          <p>Loaded veg chowmein with extra crunch and flavour.</p>
+          <div class="card-footer">
+            <span class="card-price">₹60</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="noodles" data-name="Schezwan Noodles">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=80" alt="Schezwan Noodles" loading="lazy" />
+          <span class="card-badge hot">🔥 Spicy</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Noodles</span>
+          <h3>Schezwan Noodles</h3>
+          <p>Fiery schezwan sauce noodles that pack a punch.</p>
+          <div class="card-footer">
+            <span class="card-price">₹80</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="noodles" data-name="ManChuriyan Noodles">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1574484284002-952d92456975?w=600&q=80" alt="ManChuriyan Noodles" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Noodles</span>
+          <h3>ManChuriyan Noodles</h3>
+          <p>Noodles tossed with manchurian sauce and veggies.</p>
+          <div class="card-footer">
+            <span class="card-price">₹90</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="noodles" data-name="Paneer Noodles">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80" alt="Paneer Noodles" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Noodles</span>
+          <h3>Paneer Noodles</h3>
+          <p>Stir-fried noodles with soft paneer and seasonings.</p>
+          <div class="card-footer">
+            <span class="card-price">₹90</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOSA -->
+      <div class="food-card reveal-card" data-cat="dosa" data-name="Topi Dosa">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1630383249896-424e482df921?w=600&q=80" alt="Topi Dosa" loading="lazy" />
+          <span class="card-badge bestseller">Bestseller</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Dosa</span>
+          <h3>Topi Dosa</h3>
+          <p>Crispy plain dosa served with sambar and chutneys.</p>
+          <div class="card-footer">
+            <span class="card-price">₹50</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="dosa" data-name="Masala Dosa">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&q=80" alt="Masala Dosa" loading="lazy" />
+          <span class="card-badge hot">🔥 Popular</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Dosa</span>
+          <h3>Masala Dosa</h3>
+          <p>Golden crispy dosa stuffed with spiced potato masala.</p>
+          <div class="card-footer">
+            <span class="card-price">₹50</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="dosa" data-name="Schezwan Dosa">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1630383249896-424e482df921?w=600&q=80" alt="Schezwan Dosa" loading="lazy" />
+          <span class="card-badge hot">🌶 Fusion</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Dosa</span>
+          <h3>Schezwan Dosa</h3>
+          <p>Crispy dosa with schezwan filling — an Indo-Chinese fusion.</p>
+          <div class="card-footer">
+            <span class="card-price">₹80</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIZZA -->
+      <div class="food-card reveal-card" data-cat="pizza" data-name="Veg Pizza">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&q=80" alt="Veg Pizza" loading="lazy" />
+          <span class="card-badge bestseller">Bestseller</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Pizza</span>
+          <h3>Veg Pizza</h3>
+          <p>Classic vegetable pizza with mozzarella and fresh veggies.</p>
+          <div class="card-footer">
+            <span class="card-price">₹150</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="pizza" data-name="Corn Pizza">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80" alt="Corn Pizza" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Pizza</span>
+          <h3>Corn Pizza</h3>
+          <p>Sweet corn topped pizza with cheese and herbs.</p>
+          <div class="card-footer">
+            <span class="card-price">₹160</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="pizza" data-name="Paneer Tikka Pizza">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=600&q=80" alt="Paneer Tikka Pizza" loading="lazy" />
+          <span class="card-badge chef">Chef's Pick</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Pizza</span>
+          <h3>Paneer Tikka Pizza</h3>
+          <p>Indian-style tikka paneer on a cheesy pizza base.</p>
+          <div class="card-footer">
+            <span class="card-price">₹180</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="pizza" data-name="Fresh Farm Pizza">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80" alt="Fresh Farm Pizza" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Pizza</span>
+          <h3>Fresh Farm Pizza</h3>
+          <p>Loaded with fresh farm vegetables and herbs.</p>
+          <div class="card-footer">
+            <span class="card-price">₹200</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SANDWICH -->
+      <div class="food-card reveal-card" data-cat="sandwich" data-name="Cheese Garlic Bread">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1528736235302-52922df5c122?w=600&q=80" alt="Cheese Garlic Bread" loading="lazy" />
+          <span class="card-badge bestseller">Bestseller</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Sandwich</span>
+          <h3>Cheese Garlic Bread</h3>
+          <p>Crispy garlic bread loaded with melted cheese.</p>
+          <div class="card-footer">
+            <span class="card-price">₹80</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="sandwich" data-name="Veg Sandwich">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1481070414801-51fd732d7184?w=600&q=80" alt="Veg Sandwich" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Sandwich</span>
+          <h3>Veg Sandwich</h3>
+          <p>Fresh vegetable sandwich with chutneys and sauces.</p>
+          <div class="card-footer">
+            <span class="card-price">₹60</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="sandwich" data-name="Paneer Sandwich">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=600&q=80" alt="Paneer Sandwich" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Sandwich</span>
+          <h3>Paneer Sandwich</h3>
+          <p>Grilled paneer with spices in a toasted sandwich.</p>
+          <div class="card-footer">
+            <span class="card-price">₹80</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- RICE -->
+      <div class="food-card reveal-card" data-cat="rice" data-name="Veg Fried Rice">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80" alt="Veg Fried Rice" loading="lazy" />
+          <span class="card-badge bestseller">Bestseller</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Rice</span>
+          <h3>Veg Fried Rice</h3>
+          <p>Wok-tossed fragrant rice with mixed vegetables.</p>
+          <div class="card-footer">
+            <span class="card-price">₹80</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="rice" data-name="Schezwan Fried Rice">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1596560548464-f010549b84d7?w=600&q=80" alt="Schezwan Fried Rice" loading="lazy" />
+          <span class="card-badge hot">🔥 Spicy</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Rice</span>
+          <h3>Schezwan Fried Rice</h3>
+          <p>Fried rice tossed in bold schezwan sauce.</p>
+          <div class="card-footer">
+            <span class="card-price">₹90</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="rice" data-name="Paneer Fried Rice">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80" alt="Paneer Fried Rice" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Rice</span>
+          <h3>Paneer Fried Rice</h3>
+          <p>Fried rice with fresh paneer cubes and aromatics.</p>
+          <div class="card-footer">
+            <span class="card-price">₹100</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROTI/NAAN -->
+      <div class="food-card reveal-card" data-cat="roti" data-name="Roti">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1619894991209-9f9694be045a?w=600&q=80" alt="Roti" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Roti</span>
+          <h3>Roti</h3>
+          <p>Soft whole-wheat Indian flatbread.</p>
+          <div class="card-footer">
+            <span class="card-price">₹15</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="roti" data-name="Butter Roti">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1617692855027-33b14f061079?w=600&q=80" alt="Butter Roti" loading="lazy" />
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Roti</span>
+          <h3>Butter Roti</h3>
+          <p>Soft roti slathered with creamy butter.</p>
+          <div class="card-footer">
+            <span class="card-price">₹20</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card reveal-card" data-cat="roti" data-name="Garlic Naan">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1628294895950-9805252327bc?w=600&q=80" alt="Garlic Naan" loading="lazy" />
+          <span class="card-badge bestseller">Popular</span>
+          <span class="veg-mark">🟢</span>
+        </div>
+        <div class="card-body">
+          <span class="card-cat">Naan</span>
+          <h3>Garlic Naan</h3>
+          <p>Fluffy tandoor-style naan with garlic and butter.</p>
+          <div class="card-footer">
+            <span class="card-price">₹40</span>
+            <a href="https://order.foodyvilla.in" target="_blank" class="btn-card">Order</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="no-results" id="noResults" style="display:none;">
+      <p>😔 No dishes found. Try a different search!</p>
+    </div>
+
+    <div class="view-all-wrap reveal-up">
+      <a href="https://order.foodyvilla.in" target="_blank" class="btn-outline">View Full Menu on App ↗</a>
+    </div>
+  </section>
+
+  <!-- OFFERS SECTION -->
+  <section class="offers-section" id="offers">
+    <div class="section-header reveal-up">
+      <p class="section-label">🔥 Limited Time Deals</p>
+      <h2 class="section-title">Exclusive <em>Offers For You!</em></h2>
+      <p class="section-sub">Grab the best deals before they expire 🤤</p>
+    </div>
+    <div class="offers-grid">
+      <div class="offer-card reveal-card offer-highlight">
+        <div class="offer-banner">
+          <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=800&q=80" alt="Cool & Creamy Treats" />
+          <div class="offer-banner-text">
+            <span>Cool &amp; Creamy Treats</span>
+            <small>Sip, Chill &amp; Enjoy Your Favorite Moments</small>
+          </div>
+        </div>
+        <div class="offer-body">
+          <div class="offer-title-row">
+            <h3>Fresh Brew Coffee Deal ☕</h3>
+            <span class="offer-tag">OFFER</span>
+          </div>
+          <p>☕ Freshly brewed coffee made from premium beans.<br/>⚡ Perfect for an energy boost or a relaxing break.<br/>🔥 Grab this warm delight today!</p>
+          <a href="https://order.foodyvilla.in" target="_blank" class="btn-grab">🏷 Grab This Offer</a>
+        </div>
+      </div>
+
+      <div class="offer-card reveal-card">
+        <div class="offer-icon">🍕</div>
+        <div class="offer-body">
+          <div class="offer-title-row">
+            <h3>Pizza Combo Deal</h3>
+            <span class="offer-tag">OFFER</span>
+          </div>
+          <p>🍕 Any pizza + cold drink combo at a special price.<br/>🎉 Perfect for sharing with family.<br/>⏰ Valid for dine-in and takeaway!</p>
+          <a href="https://order.foodyvilla.in" target="_blank" class="btn-grab">🏷 Grab This Offer</a>
+        </div>
+      </div>
+
+      <div class="offer-card reveal-card">
+        <div class="offer-icon">🥡</div>
+        <div class="offer-body">
+          <div class="offer-title-row">
+            <h3>Chinese Feast Combo</h3>
+            <span class="offer-tag">OFFER</span>
+          </div>
+          <p>🥡 Noodles + Manchurian + Fried Rice combo deal.<br/>💰 Save more when you order together.<br/>🛵 Available for delivery too!</p>
+          <a href="https://order.foodyvilla.in" target="_blank" class="btn-grab">🏷 Grab This Offer</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section class="about-section" id="about">
+    <div class="about-inner">
+      <div class="about-img-col reveal-left">
+        <div class="about-img-stack">
+          <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=700&q=80" alt="FoodyVilla food" class="about-img-main" />
+          <img src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=400&q=80" alt="Delicious dishes" class="about-img-accent" />
+          <div class="about-badge-float">
+            <span class="badge-icon">🌿</span>
+            <span class="badge-text">Pure Veg</span>
+          </div>
+        </div>
+      </div>
+      <div class="about-text-col reveal-right">
+        <p class="section-label">Our Story</p>
+        <h2 class="section-title">Born from <em>Love</em><br/>for Vegetarian Food</h2>
+        <p class="about-para">FoodyVilla is Nagri's favourite pure vegetarian restaurant, serving authentic Indian and Chinese dishes with love. From crispy starters to hearty mains, every dish is made fresh using quality ingredients.</p>
+        <p class="about-para">Located in Nagri, Dhamtari District, Chhattisgarh — we welcome you for dine-in, pick-up, or home delivery. Our doors are open daily from 11:30 AM to 10:30 PM.</p>
+        <div class="about-pillars">
+          <div class="pillar">
+            <span class="pillar-icon">🌿</span>
+            <div>
+              <strong>100% Pure Vegetarian</strong>
+              <p>No non-veg, no compromise — ever.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <span class="pillar-icon">🍳</span>
+            <div>
+              <strong>Made Fresh Daily</strong>
+              <p>Every dish cooked fresh to order.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <span class="pillar-icon">🛵</span>
+            <div>
+              <strong>Dine-in / Pickup / Delivery</strong>
+              <p>Multiple ways to enjoy your meal.</p>
+            </div>
+          </div>
+        </div>
+        <a href="https://order.foodyvilla.in" target="_blank" class="btn-primary">Order Now ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP DOWNLOAD SECTION -->
+  <section class="app-section">
+    <div class="app-inner reveal-up">
+      <div class="app-text">
+        <p class="section-label">Mobile App</p>
+        <h2 class="section-title">Order Anytime,<br/><em>Anywhere</em></h2>
+        <p>Download the FoodyVilla app to browse our menu, grab exclusive offers, track your order, and get in touch — all from your phone.</p>
+        <div class="app-features">
+          <span>🔔 Push Notifications</span>
+          <span>🏷 Exclusive Offers</span>
+          <span>📍 Live Tracking</span>
+          <span>🛵 Easy Ordering</span>
+        </div>
+        <a href="https://order.foodyvilla.in" target="_blank" class="btn-primary" style="margin-top:1.5rem">Visit Order Page ↗</a>
+      </div>
+      <div class="app-mockups">
+        <div class="mockup-wrap mockup-1">
+          <div class="mockup-screen">
+            <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=300&q=80" alt="App menu screen" />
+          </div>
+        </div>
+        <div class="mockup-wrap mockup-2">
+          <div class="mockup-screen">
+            <img src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=300&q=80" alt="App offers screen" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section class="contact-section" id="contact">
+    <div class="contact-inner">
+      <div class="contact-info reveal-left">
+        <p class="section-label">Get in Touch</p>
+        <h2 class="section-title">We'd Love to<br/><em>Hear From You</em></h2>
+
+        <div class="contact-cards">
+          <a href="tel:+917067371183" class="contact-card">
+            <div class="contact-card-icon">📞</div>
+            <div>
+              <strong>Call Us</strong>
+              <p>+91 7067371183</p>
+            </div>
+          </a>
+          <a href="mailto:foodyvilla.in@gmail.com" class="contact-card dark">
+            <div class="contact-card-icon">✉️</div>
+            <div>
+              <strong>Email Us</strong>
+              <p>foodyvilla.in@gmail.com</p>
+            </div>
+          </a>
+          <a href="https://wa.me/917067371183" target="_blank" class="contact-card">
+            <div class="contact-card-icon">💬</div>
+            <div>
+              <strong>WhatsApp</strong>
+              <p>Chat with us</p>
+            </div>
+          </a>
+          <div class="contact-card">
+            <div class="contact-card-icon">🎧</div>
+            <div>
+              <strong>Live Support</strong>
+              <p>In-app chat</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="service-types">
+          <span class="stype">🍽 Dine-in</span>
+          <span class="stype">🛍 Pick-up</span>
+          <span class="stype">🛵 Delivery</span>
+        </div>
+
+        <a href="https://maps.google.com/?q=Nagri,Dhamtari,Chhattisgarh" target="_blank" class="btn-directions">
+          <span>⬡</span> Get Directions
+        </a>
+      </div>
+
+      <div class="contact-location reveal-right">
+        <div class="location-map-box">
+          <div class="map-placeholder">
+            <div class="map-pin">📍</div>
+            <p><strong>FoodyVilla — Nagri Branch</strong></p>
+            <p>Nagri, Dhamtari District</p>
+            <p>Chhattisgarh, India</p>
+            <small>20°20'54.3"N 81°57'33.6"E</small>
+          </div>
+        </div>
+        <div class="opening-hours">
+          <h4>Opening Hours</h4>
+          <div class="hours-grid">
+            <span>Monday – Sunday</span>
+            <span class="hours-time">11:30 AM – 10:30 PM</span>
+          </div>
+          <div class="hours-all-open">
+            <span class="green-dot"></span> Open all 7 days
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="cta-band">
+    <div class="cta-inner reveal-up">
+      <h2>Hungry? <em>We've Got You.</em></h2>
+      <p>Fresh, pure veg meals made with love — ready for dine-in, pick-up or delivery.</p>
+      <div class="cta-btns">
+        <a href="https://order.foodyvilla.in" target="_blank" class="btn-cta">Order Online ↗</a>
+        <a href="tel:+917067371183" class="btn-cta-outline">📞 Call Us</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#home" class="logo footer-logo">
+          <span class="logo-foody">Foody</span><span class="logo-villa">Villa</span>
+          <span class="footer-veg-tag">🌿 Pure Veg</span>
+        </a>
+        <p>Making Nagri's days delicious — one pure veg meal at a time.</p>
+        <p class="footer-location">📍 Nagri, Dhamtari District, Chhattisgarh</p>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" class="social-link" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://wa.me/917067371183" class="social-link" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#offers">Offers</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="https://order.foodyvilla.in" target="_blank">Order Online</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Menu Categories</h4>
+        <ul>
+          <li><a href="#menu">🥡 Starters</a></li>
+          <li><a href="#menu">🍜 Noodles</a></li>
+          <li><a href="#menu">🥘 Maggi</a></li>
+          <li><a href="#menu">🫓 Dosa</a></li>
+          <li><a href="#menu">🍕 Pizza</a></li>
+          <li><a href="#menu">🍞 Sandwich</a></li>
+          <li><a href="#menu">🍚 Rice &amp; Roti</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li>📍 Nagri, Dhamtari, CG</li>
+          <li><a href="tel:+917067371183">📞 +91 7067371183</a></li>
+          <li><a href="mailto:foodyvilla.in@gmail.com">✉ foodyvilla.in@gmail.com</a></li>
+          <li>🕐 11:30 AM – 10:30 PM</li>
+          <li>📅 Open All 7 Days</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 FoodyVilla. All rights reserved. Made with ❤️ by FoodyVilla, Nagri CG</p>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <span>v1.0.0</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
