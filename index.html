@@ -1,388 +1,651 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Restaurant Menu & Ordering</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-<body class="bg-slate-50 text-slate-800 pb-24">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FoodyVilla — Order & Dine</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1E1A17;
+    --paper:#F6EFE4;
+    --paper-dim:#EEE2CD;
+    --chili:#C1432E;
+    --chili-dark:#9A331F;
+    --turmeric:#E8A33D;
+    --bottle:#2F4A3E;
+    --line:#D8C9AE;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+  }
+  .font-display{ font-family:'Fraunces', serif; }
+  .font-mono{ font-family:'Space Mono', monospace; }
 
-  <!-- Loading Overlay -->
-  <div id="loading" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center gap-3">
-    <div class="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-    <p class="text-slate-500 text-sm font-medium">Fetching fresh menu...</p>
+  /* ---------- Ticket / Receipt motif ---------- */
+  .ticket{
+    position:relative;
+    background:var(--paper);
+    border:1px solid var(--line);
+  }
+  .ticket::before, .ticket::after{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    height:10px;
+    background-image: radial-gradient(circle at 10px 5px, var(--ink-bg,var(--paper)) 5px, transparent 5.5px);
+    background-size: 20px 10px;
+    background-repeat: repeat-x;
+  }
+  .ticket::before{ top:-5px; }
+  .ticket::after{ bottom:-5px; transform:rotate(180deg); }
+  .ticket-dark::before, .ticket-dark::after{
+    background-image: radial-gradient(circle at 10px 5px, var(--ink) 5px, transparent 5.5px);
+  }
+
+  .dotted-rule{
+    background-image: linear-gradient(to right, var(--line) 55%, transparent 0%);
+    background-position: bottom;
+    background-size: 10px 1px;
+    background-repeat: repeat-x;
+  }
+
+  /* ---------- Hero Slider ---------- */
+  .slide{
+    opacity:0; visibility:hidden;
+    transition: opacity 1.1s ease;
+    position:absolute; inset:0;
+  }
+  .slide.active{ opacity:1; visibility:visible; position:relative; }
+  .hero-dot{ width:8px; height:8px; border-radius:999px; background:rgba(246,239,228,0.4); transition:.3s; }
+  .hero-dot.active{ background:var(--turmeric); width:26px; border-radius:999px; }
+
+  /* ---------- Marquee ---------- */
+  .marquee-track{
+    display:flex; width:max-content;
+    animation: scroll-left 26s linear infinite;
+  }
+  @keyframes scroll-left{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
+
+  /* ---------- Nav underline ---------- */
+  .nav-link{ position:relative; }
+  .nav-link::after{
+    content:""; position:absolute; left:0; bottom:-4px; height:2px; width:0%;
+    background:var(--chili); transition:width .25s ease;
+  }
+  .nav-link:hover::after{ width:100%; }
+
+  /* ---------- Category pill ---------- */
+  .category-btn.active{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+  ::-webkit-scrollbar{ height:8px; width:8px; }
+  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:99px; }
+
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    .marquee-track{ animation:none; }
+    .slide{ transition:none; }
+    .reveal{ transition:none; opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body class="pb-24">
+
+<!-- ============ LOADING ============ -->
+<div id="loading" class="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4" style="background:var(--ink)">
+  <div class="w-12 h-12 border-4 rounded-full animate-spin" style="border-color:var(--turmeric); border-top-color:transparent;"></div>
+  <p class="font-mono text-xs tracking-widest uppercase" style="color:var(--paper-dim)">firing up the tandoor…</p>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-all duration-300" style="background:transparent;">
+  <div class="max-w-6xl mx-auto px-5 md:px-8 h-20 flex items-center justify-between">
+    <a href="#home" class="flex items-center gap-3">
+      <img id="outlet-logo" src="" alt="" class="w-10 h-10 rounded-full object-cover hidden border-2" style="border-color:var(--turmeric)" />
+      <span id="brand-name" class="font-display font-bold text-2xl tracking-tight" style="color:var(--paper)">FoodyVilla</span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8 font-medium text-sm" style="color:var(--paper)">
+      <a href="#home" class="nav-link">Home</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#menu" class="nav-link">Menu</a>
+      <a href="#gallery" class="nav-link">Gallery</a>
+      <a href="#contact" class="nav-link">Visit Us</a>
+    </nav>
+
+    <button onclick="toggleCartModal(true)" class="relative px-4 py-2.5 rounded-full font-mono text-xs font-bold flex items-center gap-2 transition hover:brightness-110" style="background:var(--chili); color:var(--paper)">
+      <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+      <span id="cart-btn-text">CART · 0</span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section id="home" class="relative h-[100svh] min-h-[560px] overflow-hidden" style="background:var(--ink)">
+  <div id="hero-slides" class="absolute inset-0"></div>
+  <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(30,26,23,.55) 0%, rgba(30,26,23,.35) 40%, rgba(30,26,23,.9) 100%);"></div>
+
+  <div class="relative h-full max-w-6xl mx-auto px-5 md:px-8 flex flex-col justify-end pb-24 md:pb-28">
+    <p class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-4" style="color:var(--turmeric)">— Fresh · Local · Made to Order —</p>
+    <h1 class="font-display font-black leading-[0.95] text-5xl md:text-7xl lg:text-8xl mb-6" style="color:var(--paper)">
+      Real food,<br/>
+      <span style="color:var(--turmeric)">cooked</span> to order.
+    </h1>
+    <p class="max-w-xl text-base md:text-lg mb-8" style="color:var(--paper-dim)">
+      <span id="hero-outlet-name">Your neighbourhood kitchen</span> — every plate fired fresh, every order tracked from our kitchen to your table.
+    </p>
+    <div class="flex flex-wrap gap-4">
+      <a href="#menu" class="px-7 py-3.5 rounded-full font-bold text-sm transition hover:brightness-110" style="background:var(--chili); color:var(--paper)">View the Menu</a>
+      <a href="#contact" class="px-7 py-3.5 rounded-full font-bold text-sm border-2 transition hover:bg-white/10" style="border-color:var(--paper); color:var(--paper)">Find Us</a>
+    </div>
   </div>
 
-  <!-- Header / Navigation -->
-  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
-    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <img id="outlet-logo" src="" alt="" class="w-10 h-10 rounded-full object-cover bg-slate-100 hidden" />
-        <div>
-          <h1 id="outlet-name" class="font-bold text-slate-900 leading-tight">Loading...</h1>
-          <p id="outlet-timing" class="text-xs text-slate-500"></p>
+  <div id="hero-dots" class="absolute bottom-8 right-5 md:right-8 flex gap-2 z-10"></div>
+</section>
+
+<!-- ============ MARQUEE TICKER ============ -->
+<div class="overflow-hidden py-4 border-y" style="background:var(--ink); border-color:var(--ink)">
+  <div class="marquee-track font-display text-xl md:text-2xl font-medium" style="color:var(--paper)">
+    <span class="flex items-center gap-6 pr-6" id="marquee-a"></span>
+    <span class="flex items-center gap-6 pr-6" id="marquee-b"></span>
+  </div>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" class="max-w-6xl mx-auto px-5 md:px-8 py-20 md:py-28">
+  <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+    <div class="reveal">
+      <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--chili)">Order No. 001 — Our Story</p>
+      <h2 class="font-display font-bold text-4xl md:text-5xl mb-6 leading-tight">A kitchen that keeps its receipts.</h2>
+      <p class="text-base md:text-lg leading-relaxed mb-4" style="color:#4A3F35">
+        We started with one tawa, one grinding stone, and a stubborn belief that food tastes better when it's cooked for someone rather than for a queue. Every dish that leaves our kitchen is made after your order lands — not before.
+      </p>
+      <p class="text-base md:text-lg leading-relaxed mb-8" style="color:#4A3F35">
+        From the first order slip to the last table cleared, we track every plate — so what reaches you is exactly what you asked for, at the temperature it deserves.
+      </p>
+
+      <div class="ticket ticket-dark grid grid-cols-3 divide-x px-2" style="border-color:var(--ink); --ink-bg:var(--paper);">
+        <div class="px-4 py-5 text-center">
+          <p class="font-display font-black text-3xl">7+</p>
+          <p class="font-mono text-[10px] uppercase tracking-widest mt-1" style="color:#7A6C5D">Years Serving</p>
+        </div>
+        <div class="px-4 py-5 text-center">
+          <p class="font-display font-black text-3xl">120+</p>
+          <p class="font-mono text-[10px] uppercase tracking-widest mt-1" style="color:#7A6C5D">Dishes on rotation</p>
+        </div>
+        <div class="px-4 py-5 text-center">
+          <p class="font-display font-black text-3xl">30k</p>
+          <p class="font-mono text-[10px] uppercase tracking-widest mt-1" style="color:#7A6C5D">Orders fired</p>
         </div>
       </div>
-      
-      <!-- Cart Trigger Button -->
-      <button onclick="toggleCartModal(true)" class="relative p-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-medium transition flex items-center gap-2">
-        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-        <span class="text-sm font-bold" id="cart-btn-text">Cart (0)</span>
+    </div>
+
+    <div class="reveal grid grid-cols-2 gap-4">
+      <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=800&q=80" class="rounded-2xl object-cover h-64 md:h-72 w-full" alt="Chef plating a dish"/>
+      <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=800&q=80" class="rounded-2xl object-cover h-64 md:h-72 w-full mt-8" alt="Restaurant table spread"/>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENU ============ -->
+<section id="menu" class="py-20 md:py-28" style="background:var(--ink)">
+  <div class="max-w-6xl mx-auto px-5 md:px-8">
+    <div class="flex items-end justify-between mb-10 flex-wrap gap-6">
+      <div>
+        <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--turmeric)">Order No. 002 — Today's Ticket</p>
+        <h2 class="font-display font-bold text-4xl md:text-5xl" style="color:var(--paper)">The Menu</h2>
+      </div>
+      <label class="flex items-center gap-2 cursor-pointer px-4 py-2 rounded-full border text-sm font-medium shrink-0" style="border-color:#4A3F35; color:var(--paper-dim)">
+        <input type="checkbox" id="veg-toggle" onchange="renderMenu()" class="sr-only peer" />
+        <span class="w-3 h-3 rounded-full border-2 flex items-center justify-center p-0.5" style="border-color:#4ADE80">
+          <span class="w-1.5 h-1.5 rounded-full" style="background:#4ADE80"></span>
+        </span>
+        Veg Only
+      </label>
+    </div>
+
+    <div id="offers-section" class="hidden mb-10">
+      <div id="offers-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </div>
+
+    <div id="categories-container" class="flex gap-2 overflow-x-auto pb-4 mb-6">
+      <button onclick="filterCategory('all')" class="category-btn active px-4 py-2 rounded-full text-sm font-semibold border shrink-0 transition" style="border-color:#4A3F35; color:var(--paper)">
+        All Items
       </button>
     </div>
-  </header>
 
-  <main class="max-w-5xl mx-auto px-4 pt-6 space-y-8">
+    <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+  </div>
+</section>
 
-    <!-- Banners Slider -->
-    <section id="banners-container" class="hidden overflow-x-auto flex gap-4 scrollbar-none snap-x pb-2">
-      <!-- Injected dynamically -->
-    </section>
+<!-- ============ GALLERY ============ -->
+<section id="gallery" class="max-w-6xl mx-auto px-5 md:px-8 py-20 md:py-28">
+  <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--chili)">Order No. 003 — From the Pass</p>
+  <h2 class="font-display font-bold text-4xl md:text-5xl mb-10">A peek in the kitchen.</h2>
 
-    <!-- Special Offers Grid -->
-    <section id="offers-section" class="hidden">
-      <h2 class="text-lg font-bold mb-3 text-slate-900 flex items-center gap-2">
-        <i data-lucide="sparkles" class="w-5 h-5 text-amber-500"></i> Special Offers
-      </h2>
-      <div id="offers-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Injected dynamically -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[160px] md:auto-rows-[190px]">
+    <img class="col-span-2 row-span-2 rounded-2xl object-cover w-full h-full" src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=80" alt="Thali spread"/>
+    <img class="rounded-2xl object-cover w-full h-full" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" alt="Grilled dish"/>
+    <img class="rounded-2xl object-cover w-full h-full" src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80" alt="Fresh salad"/>
+    <img class="rounded-2xl object-cover w-full h-full" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80" alt="Restaurant interior"/>
+    <img class="col-span-2 rounded-2xl object-cover w-full h-full" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80" alt="Food spread on table"/>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="py-20 md:py-28" style="background:var(--paper-dim)">
+  <div class="max-w-6xl mx-auto px-5 md:px-8">
+    <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--chili)">Order No. 004 — Guest Notes</p>
+    <h2 class="font-display font-bold text-4xl md:text-5xl mb-12">What the table says.</h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="ticket p-6" style="--ink-bg:var(--paper-dim)">
+        <p class="font-display text-lg leading-snug mb-4">"Ordered the thali twice this week. Everything arrives hot, exactly on time — feels like they actually watch the kitchen queue."</p>
+        <p class="font-mono text-xs uppercase tracking-widest" style="color:#7A6C5D">— Priya S., Regular</p>
       </div>
-    </section>
-
-    <!-- Controls: Category Pills & Filters -->
-    <section class="space-y-4">
-      <div class="flex items-center justify-between gap-4 overflow-x-auto pb-2">
-        <!-- Category Buttons -->
-        <div id="categories-container" class="flex gap-2">
-          <button onclick="filterCategory('all')" class="category-btn active px-4 py-2 rounded-full text-sm font-semibold bg-amber-500 text-white shadow-sm border border-transparent">
-            All Items
-          </button>
-        </div>
-
-        <!-- Veg Only Toggle -->
-        <label class="flex items-center gap-2 cursor-pointer bg-white px-3 py-2 rounded-full border border-slate-200 text-sm font-medium shrink-0 shadow-sm">
-          <input type="checkbox" id="veg-toggle" onchange="renderMenu()" class="sr-only peer" />
-          <span class="w-3 h-3 rounded-full border-2 border-green-600 flex items-center justify-center p-0.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
-          </span>
-          <span class="text-slate-600 peer-checked:text-green-700">Veg Only</span>
-        </label>
+      <div class="ticket p-6" style="--ink-bg:var(--paper-dim)">
+        <p class="font-display text-lg leading-snug mb-4">"Best dine-in experience in the area. The staff knows the menu inside out and the veg options are never an afterthought."</p>
+        <p class="font-mono text-xs uppercase tracking-widest" style="color:#7A6C5D">— Rohit M., Weekend regular</p>
       </div>
-    </section>
-
-    <!-- Menu Items Grid -->
-    <section class="space-y-4">
-      <h2 class="text-xl font-bold text-slate-900">Our Menu</h2>
-      <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Injected dynamically -->
-      </div>
-    </section>
-  </main>
-
-  <!-- Cart Modal Slide-over -->
-  <div id="cart-modal" class="fixed inset-0 z-40 hidden">
-    <!-- Backdrop -->
-    <div onclick="toggleCartModal(false)" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
-
-    <!-- Drawer -->
-    <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col z-10">
-      <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-        <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
-          <i data-lucide="shopping-cart" class="w-5 h-5 text-amber-500"></i> Your Order
-        </h3>
-        <button onclick="toggleCartModal(false)" class="p-2 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <!-- Cart Items List -->
-      <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3 divide-y divide-slate-100">
-        <!-- Injected dynamically -->
-      </div>
-
-      <!-- Checkout Footer -->
-      <div class="p-4 border-t border-slate-100 bg-slate-50 space-y-3">
-        <div class="flex justify-between font-bold text-lg text-slate-900">
-          <span>Total:</span>
-          <span id="cart-total-price">₹0.00</span>
-        </div>
-        <button onclick="placeOrder()" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-center transition">
-          Proceed to Checkout
-        </button>
+      <div class="ticket p-6" style="--ink-bg:var(--paper-dim)">
+        <p class="font-display text-lg leading-snug mb-4">"Booked a table for eight on short notice. Smooth from the first call to the final bill."</p>
+        <p class="font-mono text-xs uppercase tracking-widest" style="color:#7A6C5D">— Ananya K., Family celebration</p>
       </div>
     </div>
   </div>
+</section>
 
-  <script>
-    // --- CONFIGURATION ---
-    // Replace with your dynamic Supabase Edge Function URL
-    const FUNCTION_URL = "https://qxqnwfcljizyscrqkntd.supabase.co/functions/v1/public_website";
+<!-- ============ CONTACT / VISIT ============ -->
+<section id="contact" class="py-20 md:py-28" style="background:var(--ink)">
+  <div class="max-w-6xl mx-auto px-5 md:px-8 grid md:grid-cols-2 gap-12">
+    <div>
+      <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--turmeric)">Order No. 005 — Find Us</p>
+      <h2 class="font-display font-bold text-4xl md:text-5xl mb-8" style="color:var(--paper)">Come sit at the table.</h2>
 
-    // Application State
-    let state = {
-      outlet: null,
-      categories: [],
-      banners: [],
-      offers: [],
-      menu: [],
-      cart: {}, // Format: { menu_item_id: { item, qty } }
-      selectedCategory: 'all'
-    };
-
-    // --- INITIALIZATION ---
-    async function init() {
-      try {
-        const res = await fetch(FUNCTION_URL);
-        if (!res.ok) throw new Error("Failed to fetch menu data.");
-        
-        const data = await res.json();
-        state.outlet = data.outlet;
-        state.categories = data.categories;
-        state.banners = data.banners;
-        state.offers = data.offers;
-        state.menu = data.menu;
-
-        renderOutletDetails();
-        renderBanners();
-        renderOffers();
-        renderCategories();
-        renderMenu();
-
-      } catch (err) {
-        alert("Error loading menu: " + err.message);
-      } finally {
-        document.getElementById("loading").classList.add("hidden");
-        lucide.createIcons();
-      }
-    }
-
-    // --- RENDER FUNCTIONS ---
-    function renderOutletDetails() {
-      if (!state.outlet) return;
-      document.title = state.outlet.name;
-      document.getElementById("outlet-name").innerText = state.outlet.name;
-      
-      if (state.outlet.opens_at && state.outlet.closes_at) {
-        document.getElementById("outlet-timing").innerText = `Open: ${state.outlet.opens_at.slice(0, 5)} - ${state.outlet.closes_at.slice(0, 5)}`;
-      }
-      
-      if (state.outlet.logo_url) {
-        const logo = document.getElementById("outlet-logo");
-        logo.src = state.outlet.logo_url;
-        logo.classList.remove("hidden");
-      }
-    }
-
-    function renderBanners() {
-      if (!state.banners.length) return;
-      const container = document.getElementById("banners-container");
-      container.classList.remove("hidden");
-      
-      container.innerHTML = state.banners.map(b => `
-        <div class="snap-center shrink-0 w-80 md:w-96 h-40 rounded-2xl overflow-hidden relative shadow-sm">
-          <img src="${b.img_url}" alt="${b.title || ''}" class="w-full h-full object-cover"/>
-          ${b.title ? `<div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
-            <h4 class="text-white font-bold">${b.title}</h4>
-          </div>` : ''}
+      <div class="space-y-5 font-medium" style="color:var(--paper-dim)">
+        <div class="flex items-start gap-3">
+          <i data-lucide="map-pin" class="w-5 h-5 mt-0.5 shrink-0" style="color:var(--turmeric)"></i>
+          <span id="contact-address">Raipur, Chhattisgarh, India</span>
         </div>
-      `).join('');
-    }
-
-    function renderOffers() {
-      if (!state.offers.length) return;
-      document.getElementById("offers-section").classList.remove("hidden");
-      const container = document.getElementById("offers-container");
-
-      container.innerHTML = state.offers.map(o => `
-        <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/60 p-4 rounded-2xl flex gap-4 items-center shadow-sm">
-          ${o.img_url ? `<img src="${o.img_url}" class="w-16 h-16 rounded-xl object-cover shrink-0"/>` : ''}
-          <div>
-            <h4 class="font-bold text-amber-950">${o.title}</h4>
-            <p class="text-xs text-amber-800 mt-1">${o.description || ''}</p>
-          </div>
+        <div class="flex items-start gap-3">
+          <i data-lucide="clock" class="w-5 h-5 mt-0.5 shrink-0" style="color:var(--turmeric)"></i>
+          <span id="contact-timing">Open daily, 11:00 AM – 11:00 PM</span>
         </div>
-      `).join('');
-    }
+        <div class="flex items-start gap-3">
+          <i data-lucide="phone" class="w-5 h-5 mt-0.5 shrink-0" style="color:var(--turmeric)"></i>
+          <span id="contact-phone">+91 00000 00000</span>
+        </div>
+      </div>
 
-    function renderCategories() {
-      const container = document.getElementById("categories-container");
-      const catButtons = state.categories.map(c => `
-        <button onclick="filterCategory(${c.id})" id="cat-btn-${c.id}" class="category-btn px-4 py-2 rounded-full text-sm font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shrink-0 shadow-sm transition">
+      <div class="flex gap-3 mt-8">
+        <a href="#" class="w-11 h-11 rounded-full border flex items-center justify-center hover:bg-white/10 transition" style="border-color:#4A3F35"><i data-lucide="instagram" class="w-4 h-4" style="color:var(--paper)"></i></a>
+        <a href="#" class="w-11 h-11 rounded-full border flex items-center justify-center hover:bg-white/10 transition" style="border-color:#4A3F35"><i data-lucide="facebook" class="w-4 h-4" style="color:var(--paper)"></i></a>
+        <a href="#" class="w-11 h-11 rounded-full border flex items-center justify-center hover:bg-white/10 transition" style="border-color:#4A3F35"><i data-lucide="phone-call" class="w-4 h-4" style="color:var(--paper)"></i></a>
+      </div>
+    </div>
+
+    <div class="rounded-2xl overflow-hidden h-72 md:h-full min-h-[300px]">
+      <iframe class="w-full h-full grayscale contrast-125" style="filter:invert(0.92) hue-rotate(180deg);" loading="lazy"
+        src="https://www.google.com/maps?q=Raipur,Chhattisgarh&output=embed"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="py-10" style="background:#151210">
+  <div class="max-w-6xl mx-auto px-5 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+    <span class="font-display font-bold text-lg" style="color:var(--paper)">FoodyVilla</span>
+    <p class="font-mono text-[11px]" style="color:#7A6C5D">© <span id="footer-year"></span> FoodyVilla. Every plate, tracked from kitchen to table.</p>
+  </div>
+</footer>
+
+<!-- ============ CART MODAL ============ -->
+<div id="cart-modal" class="fixed inset-0 z-[90] hidden">
+  <div onclick="toggleCartModal(false)" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <div class="absolute right-0 top-0 h-full w-full max-w-md flex flex-col z-10" style="background:var(--paper)">
+    <div class="p-5 border-b flex items-center justify-between" style="border-color:var(--line)">
+      <h3 class="font-display font-bold text-xl flex items-center gap-2">
+        <i data-lucide="shopping-cart" class="w-5 h-5" style="color:var(--chili)"></i> Your Order
+      </h3>
+      <button onclick="toggleCartModal(false)" class="p-2 rounded-lg hover:bg-black/5"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+
+    <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-1"></div>
+
+    <div class="p-5 border-t space-y-3" style="border-color:var(--line); background:var(--paper-dim)">
+      <div class="flex justify-between font-display font-bold text-lg">
+        <span>Total</span>
+        <span id="cart-total-price" class="font-mono">₹0.00</span>
+      </div>
+      <button onclick="placeOrder()" class="w-full py-3.5 rounded-xl font-bold text-center transition hover:brightness-110" style="background:var(--chili); color:var(--paper)">
+        Place Order
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const FUNCTION_URL = "https://qxqnwfcljizyscrqkntd.supabase.co/functions/v1/public_website";
+
+  let state = {
+    outlet: null, categories: [], banners: [], offers: [], menu: [],
+    cart: {}, selectedCategory: 'all'
+  };
+
+  // Fallback demo data so the site always looks complete even before the live menu loads
+  const FALLBACK = {
+    outlet: {
+      name: "FoodyVilla",
+      opens_at: "11:00:00", closes_at: "23:00:00",
+      logo_url: null,
+      address: "MG Road, Raipur, Chhattisgarh",
+      phone: "+91 98765 43210"
+    },
+    categories: [
+      { id: 1, name: "Starters", emoji: "🥟" },
+      { id: 2, name: "Mains", emoji: "🍛" },
+      { id: 3, name: "Breads", emoji: "🫓" },
+      { id: 4, name: "Desserts", emoji: "🍮" },
+      { id: 5, name: "Beverages", emoji: "🥤" }
+    ],
+    banners: [],
+    offers: [
+      { title: "Weekend Thali Combo", description: "Unlimited thali, served fresh — every weekend.", img_url: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=300&q=80" },
+      { title: "Family Feast Deal", description: "Order for 4+ and save 15% on mains.", img_url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=300&q=80" }
+    ],
+    menu: [
+      { menu_item_id: 1, category_id: 1, name: "Paneer Tikka", description: "Char-grilled cottage cheese, smoked and spiced.", is_veg: true, is_bestseller: true, in_stock: true, images: ["https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 220, original_price: 260, discount_percentage: 15 } },
+      { menu_item_id: 2, category_id: 1, name: "Chicken Seekh Kebab", description: "Minced chicken skewers, roasted over coal.", is_veg: false, is_bestseller: true, in_stock: true, images: ["https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 260, original_price: 260, discount_percentage: 0 } },
+      { menu_item_id: 3, category_id: 2, name: "Dal Makhani", description: "Slow-cooked black lentils, finished with cream.", is_veg: true, is_bestseller: false, in_stock: true, images: ["https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 190, original_price: 190, discount_percentage: 0 } },
+      { menu_item_id: 4, category_id: 2, name: "Butter Chicken", description: "Tandoori chicken in a rich tomato-butter gravy.", is_veg: false, is_bestseller: true, in_stock: true, images: ["https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 290, original_price: 320, discount_percentage: 9 } },
+      { menu_item_id: 5, category_id: 3, name: "Butter Naan", description: "Tandoor-fired flatbread, brushed with butter.", is_veg: true, is_bestseller: false, in_stock: true, images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 45, original_price: 45, discount_percentage: 0 } },
+      { menu_item_id: 6, category_id: 4, name: "Gulab Jamun", description: "Warm milk dumplings soaked in cardamom syrup.", is_veg: true, is_bestseller: false, in_stock: true, images: ["https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 90, original_price: 90, discount_percentage: 0 } },
+      { menu_item_id: 7, category_id: 5, name: "Masala Chaas", description: "Spiced buttermilk, served chilled.", is_veg: true, is_bestseller: false, in_stock: true, images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 60, original_price: 60, discount_percentage: 0 } },
+      { menu_item_id: 8, category_id: 2, name: "Veg Biryani", description: "Fragrant basmati, slow-dum cooked with vegetables.", is_veg: true, is_bestseller: false, in_stock: false, images: ["https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 210, original_price: 210, discount_percentage: 0 } }
+    ]
+  };
+
+  const HERO_IMAGES = [
+    "https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1600&q=80"
+  ];
+
+  const MARQUEE_ITEMS = ["Fresh Tandoor Daily", "★", "No Frozen Shortcuts", "★", "Table & Takeaway", "★", "Order Tracked Live", "★", "Made After You Order", "★"];
+
+  async function init() {
+    try {
+      const res = await fetch(FUNCTION_URL);
+      if (!res.ok) throw new Error("no live data");
+      const data = await res.json();
+      state.outlet = data.outlet || FALLBACK.outlet;
+      state.categories = (data.categories && data.categories.length) ? data.categories : FALLBACK.categories;
+      state.banners = data.banners || [];
+      state.offers = (data.offers && data.offers.length) ? data.offers : FALLBACK.offers;
+      state.menu = (data.menu && data.menu.length) ? data.menu : FALLBACK.menu;
+    } catch (err) {
+      state.outlet = FALLBACK.outlet;
+      state.categories = FALLBACK.categories;
+      state.offers = FALLBACK.offers;
+      state.menu = FALLBACK.menu;
+    } finally {
+      renderOutletDetails();
+      renderOffers();
+      renderCategories();
+      renderMenu();
+      buildHeroSlider();
+      buildMarquee();
+      document.getElementById("loading").classList.add("hidden");
+      lucide.createIcons();
+      setupScrollHeader();
+      setupReveal();
+    }
+  }
+
+  function renderOutletDetails() {
+    if (!state.outlet) return;
+    document.title = state.outlet.name + " — Order & Dine";
+    document.getElementById("brand-name").innerText = state.outlet.name;
+    document.getElementById("hero-outlet-name").innerText = state.outlet.name;
+    if (state.outlet.opens_at && state.outlet.closes_at) {
+      document.getElementById("contact-timing").innerText =
+        `Open daily, ${fmtTime(state.outlet.opens_at)} – ${fmtTime(state.outlet.closes_at)}`;
+    }
+    if (state.outlet.address) document.getElementById("contact-address").innerText = state.outlet.address;
+    if (state.outlet.phone) document.getElementById("contact-phone").innerText = state.outlet.phone;
+    if (state.outlet.logo_url) {
+      const logo = document.getElementById("outlet-logo");
+      logo.src = state.outlet.logo_url;
+      logo.classList.remove("hidden");
+    }
+  }
+
+  function fmtTime(t) {
+    const [h, m] = t.split(":").map(Number);
+    const ampm = h >= 12 ? "PM" : "AM";
+    const h12 = h % 12 === 0 ? 12 : h % 12;
+    return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+  }
+
+  function buildHeroSlider() {
+    const imgs = state.banners.length ? state.banners.map(b => b.img_url) : HERO_IMAGES;
+    const container = document.getElementById("hero-slides");
+    const dots = document.getElementById("hero-dots");
+    container.innerHTML = imgs.map((src, i) => `
+      <div class="slide ${i === 0 ? 'active' : ''}" data-i="${i}">
+        <img src="${src}" class="w-full h-full object-cover" alt="Signature dish"/>
+      </div>
+    `).join('');
+    dots.innerHTML = imgs.map((_, i) => `<span class="hero-dot ${i===0?'active':''}" data-i="${i}"></span>`).join('');
+
+    let current = 0;
+    setInterval(() => {
+      const slides = container.querySelectorAll('.slide');
+      const dotEls = dots.querySelectorAll('.hero-dot');
+      slides[current].classList.remove('active');
+      dotEls[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+      dotEls[current].classList.add('active');
+    }, 5000);
+  }
+
+  function buildMarquee() {
+    const html = MARQUEE_ITEMS.map(t => `<span class="${t==='★' ? '' : 'font-display'}" style="${t==='★' ? 'color:var(--turmeric)' : ''}">${t}</span>`).join('');
+    document.getElementById("marquee-a").innerHTML = html;
+    document.getElementById("marquee-b").innerHTML = html;
+  }
+
+  function renderOffers() {
+    if (!state.offers.length) return;
+    document.getElementById("offers-section").classList.remove("hidden");
+    document.getElementById("offers-container").innerHTML = state.offers.map(o => `
+      <div class="ticket p-4 flex gap-4 items-center" style="--ink-bg:var(--ink)">
+        ${o.img_url ? `<img src="${o.img_url}" class="w-16 h-16 rounded-xl object-cover shrink-0"/>` : ''}
+        <div>
+          <h4 class="font-display font-bold" style="color:var(--paper)">${o.title}</h4>
+          <p class="text-xs mt-1" style="color:var(--paper-dim)">${o.description || ''}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderCategories() {
+    const container = document.getElementById("categories-container");
+    container.innerHTML = `<button onclick="filterCategory('all')" id="cat-btn-all" class="category-btn active px-4 py-2 rounded-full text-sm font-semibold border shrink-0 transition" style="border-color:#4A3F35; color:var(--paper)">All Items</button>` +
+      state.categories.map(c => `
+        <button onclick="filterCategory(${c.id})" id="cat-btn-${c.id}" class="category-btn px-4 py-2 rounded-full text-sm font-semibold border shrink-0 transition" style="border-color:#4A3F35; color:var(--paper)">
           ${c.emoji || ''} ${c.name}
         </button>
       `).join('');
-      
-      container.innerHTML += catButtons;
+  }
+
+  function renderMenu() {
+    const menuGrid = document.getElementById("menu-grid");
+    const vegOnly = document.getElementById("veg-toggle").checked;
+
+    const filtered = state.menu.filter(item => {
+      const matchesCategory = state.selectedCategory === 'all' || item.category_id === state.selectedCategory;
+      const matchesVeg = !vegOnly || item.is_veg;
+      return matchesCategory && matchesVeg;
+    });
+
+    if (!filtered.length) {
+      menuGrid.innerHTML = `<div class="col-span-full py-16 text-center font-mono text-sm" style="color:var(--paper-dim)">No items on this ticket yet.</div>`;
+      return;
     }
 
-    function renderMenu() {
-      const menuGrid = document.getElementById("menu-grid");
-      const vegOnly = document.getElementById("veg-toggle").checked;
+    menuGrid.innerHTML = filtered.map(item => {
+      const cartQty = state.cart[item.menu_item_id]?.qty || 0;
+      const firstImg = Array.isArray(item.images) && item.images.length ? item.images[0] : null;
 
-      // Filter Logic
-      const filtered = state.menu.filter(item => {
-        const matchesCategory = state.selectedCategory === 'all' || item.category_id === state.selectedCategory;
-        const matchesVeg = !vegOnly || item.is_veg;
-        return matchesCategory && matchesVeg;
-      });
+      return `
+        <div class="ticket p-4 flex gap-4 items-start ${!item.in_stock ? 'opacity-50' : ''}" style="--ink-bg:var(--ink)">
+          <div class="flex-1 space-y-1.5">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full border-2 ${item.is_veg ? 'border-green-500' : 'border-red-500'} flex items-center justify-center p-0.5">
+                <span class="w-1.5 h-1.5 rounded-full ${item.is_veg ? 'bg-green-500' : 'bg-red-500'}"></span>
+              </span>
+              ${item.is_bestseller ? `<span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full" style="background:var(--turmeric); color:var(--ink)">BESTSELLER</span>` : ''}
+            </div>
+            <h3 class="font-display font-bold text-lg leading-snug" style="color:var(--paper)">${item.name}</h3>
+            <p class="text-xs" style="color:#9A8C7A">${item.description || ''}</p>
 
-      if (!filtered.length) {
-        menuGrid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">No items available in this selection.</div>`;
-        return;
-      }
+            <div class="pt-2 flex items-baseline gap-2 font-mono">
+              <span class="font-bold" style="color:var(--turmeric)">₹${item.pricing.final_price}</span>
+              ${item.pricing.discount_percentage > 0 ? `
+                <span class="text-xs line-through" style="color:#6B5F52">₹${item.pricing.original_price}</span>
+                <span class="text-xs font-semibold" style="color:#4ADE80">${item.pricing.discount_percentage}% OFF</span>
+              ` : ''}
+            </div>
+          </div>
 
-      menuGrid.innerHTML = filtered.map(item => {
-        const cartQty = state.cart[item.menu_item_id]?.qty || 0;
-        const firstImg = Array.isArray(item.images) && item.images.length ? item.images[0] : null;
+          <div class="w-24 flex flex-col items-center gap-2 shrink-0">
+            ${firstImg ? `<img src="${firstImg}" class="w-24 h-20 rounded-xl object-cover"/>` : `<div class="w-24 h-20 rounded-xl" style="background:#2A241F"></div>`}
 
+            ${!item.in_stock ? `
+              <span class="text-[10px] font-mono font-bold py-1" style="color:var(--chili)">SOLD OUT</span>
+            ` : cartQty === 0 ? `
+              <button onclick="updateCart(${item.menu_item_id}, 1)" class="w-full py-1.5 rounded-lg text-xs font-bold transition hover:brightness-110" style="background:var(--chili); color:var(--paper)">
+                ADD
+              </button>
+            ` : `
+              <div class="flex items-center justify-between w-full rounded-lg px-2 py-1 text-xs font-bold font-mono" style="background:var(--chili); color:var(--paper)">
+                <button onclick="updateCart(${item.menu_item_id}, -1)">-</button>
+                <span>${cartQty}</span>
+                <button onclick="updateCart(${item.menu_item_id}, 1)">+</button>
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    lucide.createIcons();
+  }
+
+  function updateCart(menuItemId, change) {
+    const item = state.menu.find(m => m.menu_item_id === menuItemId);
+    if (!item) return;
+    const currentQty = state.cart[menuItemId]?.qty || 0;
+    const newQty = currentQty + change;
+    if (newQty <= 0) delete state.cart[menuItemId];
+    else state.cart[menuItemId] = { item, qty: newQty };
+    renderMenu();
+    renderCartDrawer();
+  }
+
+  function renderCartDrawer() {
+    const container = document.getElementById("cart-items");
+    const cartKeys = Object.keys(state.cart);
+    let totalItems = 0, totalPrice = 0;
+
+    if (!cartKeys.length) {
+      container.innerHTML = `<div class="text-center py-16 font-mono text-sm" style="color:#9A8C7A">Your ticket is empty.</div>`;
+    } else {
+      container.innerHTML = cartKeys.map(key => {
+        const { item, qty } = state.cart[key];
+        const itemTotal = item.pricing.final_price * qty;
+        totalItems += qty; totalPrice += itemTotal;
         return `
-          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex gap-4 items-start relative ${!item.in_stock ? 'opacity-60' : ''}">
-            
-            <!-- Item Info -->
-            <div class="flex-1 space-y-1">
-              <div class="flex items-center gap-2">
-                <!-- Veg Indicator Dot -->
-                <span class="w-3 h-3 rounded-full border-2 ${item.is_veg ? 'border-green-600' : 'border-red-600'} flex items-center justify-center p-0.5">
-                  <span class="w-1.5 h-1.5 rounded-full ${item.is_veg ? 'bg-green-600' : 'bg-red-600'}"></span>
-                </span>
-                ${item.is_bestseller ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">BESTSELLER</span>` : ''}
-              </div>
-
-              <h3 class="font-bold text-slate-900 leading-snug">${item.name}</h3>
-              <p class="text-xs text-slate-500 line-clamp-2">${item.description || ''}</p>
-
-              <!-- Pricing -->
-              <div class="pt-2 flex items-baseline gap-2">
-                <span class="font-bold text-slate-900">₹${item.pricing.final_price}</span>
-                ${item.pricing.discount_percentage > 0 ? `
-                  <span class="text-xs text-slate-400 line-through">₹${item.pricing.original_price}</span>
-                  <span class="text-xs font-semibold text-green-600">${item.pricing.discount_percentage}% OFF</span>
-                ` : ''}
+          <div class="py-3 dotted-rule flex items-center justify-between">
+            <div>
+              <h4 class="font-semibold text-sm">${item.name}</h4>
+              <p class="text-xs font-mono" style="color:#7A6C5D">₹${item.pricing.final_price} × ${qty}</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="font-bold text-sm font-mono">₹${itemTotal.toFixed(2)}</span>
+              <div class="flex items-center gap-2 rounded-lg px-2 py-1 text-xs font-bold font-mono" style="background:var(--paper-dim)">
+                <button onclick="updateCart(${item.menu_item_id}, -1)" class="px-1">-</button>
+                <span>${qty}</span>
+                <button onclick="updateCart(${item.menu_item_id}, 1)" class="px-1">+</button>
               </div>
             </div>
-
-            <!-- Image & Add Button -->
-            <div class="w-24 flex flex-col items-center gap-2 shrink-0">
-              ${firstImg ? `<img src="${firstImg}" class="w-24 h-20 rounded-xl object-cover bg-slate-100"/>` : '<div class="w-24 h-20 bg-slate-100 rounded-xl"></div>'}
-              
-              ${!item.in_stock ? `
-                <span class="text-xs text-red-500 font-bold py-1">Out of Stock</span>
-              ` : cartQty === 0 ? `
-                <button onclick="updateCart(${item.menu_item_id}, 1)" class="w-full py-1.5 bg-amber-50 text-amber-600 border border-amber-200 hover:bg-amber-100 rounded-lg text-xs font-bold transition">
-                  ADD
-                </button>
-              ` : `
-                <div class="flex items-center justify-between w-full bg-amber-500 text-white rounded-lg px-2 py-1 text-xs font-bold">
-                  <button onclick="updateCart(${item.menu_item_id}, -1)">-</button>
-                  <span>${cartQty}</span>
-                  <button onclick="updateCart(${item.menu_item_id}, 1)">+</button>
-                </div>
-              `}
-            </div>
-
           </div>
         `;
       }).join('');
-
-      lucide.createIcons();
     }
 
-    // --- CART LOGIC ---
-    function updateCart(menuItemId, change) {
-      const item = state.menu.find(m => m.menu_item_id === menuItemId);
-      if (!item) return;
+    document.getElementById("cart-btn-text").innerText = `CART · ${totalItems}`;
+    document.getElementById("cart-total-price").innerText = `₹${totalPrice.toFixed(2)}`;
+  }
 
-      const currentQty = state.cart[menuItemId]?.qty || 0;
-      const newQty = currentQty + change;
+  function filterCategory(catId) {
+    state.selectedCategory = catId;
+    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = catId === 'all' ? document.getElementById('cat-btn-all') : document.getElementById(`cat-btn-${catId}`);
+    if (activeBtn) activeBtn.classList.add('active');
+    renderMenu();
+  }
 
-      if (newQty <= 0) {
-        delete state.cart[menuItemId];
+  function toggleCartModal(show) {
+    const modal = document.getElementById("cart-modal");
+    if (show) { modal.classList.remove("hidden"); renderCartDrawer(); }
+    else modal.classList.add("hidden");
+  }
+
+  function placeOrder() {
+    if (!Object.keys(state.cart).length) { alert("Add items to your ticket before proceeding!"); return; }
+    alert("Order ready for checkout integration!");
+  }
+
+  function setupScrollHeader() {
+    const header = document.getElementById("site-header");
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        header.style.background = 'rgba(30,26,23,0.92)';
+        header.style.backdropFilter = 'blur(10px)';
+        header.style.borderBottom = '1px solid #33291f';
       } else {
-        state.cart[menuItemId] = { item, qty: newQty };
+        header.style.background = 'transparent';
+        header.style.backdropFilter = 'none';
+        header.style.borderBottom = 'none';
       }
+    });
+  }
 
-      renderMenu();
-      renderCartDrawer();
-    }
+  function setupReveal() {
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.15 });
+    els.forEach(el => io.observe(el));
+  }
 
-    function renderCartDrawer() {
-      const container = document.getElementById("cart-items");
-      const cartKeys = Object.keys(state.cart);
-
-      let totalItems = 0;
-      let totalPrice = 0;
-
-      if (cartKeys.length === 0) {
-        container.innerHTML = `<div class="text-center py-12 text-slate-400 text-sm">Your cart is empty.</div>`;
-      } else {
-        container.innerHTML = cartKeys.map(key => {
-          const { item, qty } = state.cart[key];
-          const itemTotal = item.pricing.final_price * qty;
-          totalItems += qty;
-          totalPrice += itemTotal;
-
-          return `
-            <div class="pt-3 flex items-center justify-between">
-              <div>
-                <h4 class="font-semibold text-sm text-slate-900">${item.name}</h4>
-                <p class="text-xs text-slate-500">₹${item.pricing.final_price} × ${qty}</p>
-              </div>
-              <div class="flex items-center gap-3">
-                <span class="font-bold text-sm text-slate-900">₹${itemTotal.toFixed(2)}</span>
-                <div class="flex items-center gap-2 bg-slate-100 rounded-lg px-2 py-1 text-xs font-bold">
-                  <button onclick="updateCart(${item.menu_item_id}, -1)" class="px-1 text-slate-600">-</button>
-                  <span>${qty}</span>
-                  <button onclick="updateCart(${item.menu_item_id}, 1)" class="px-1 text-slate-600">+</button>
-                </div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      document.getElementById("cart-btn-text").innerText = `Cart (${totalItems})`;
-      document.getElementById("cart-total-price").innerText = `₹${totalPrice.toFixed(2)}`;
-    }
-
-    function filterCategory(catId) {
-      state.selectedCategory = catId;
-      document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.classList.remove('bg-amber-500', 'text-white');
-        btn.classList.add('bg-white', 'text-slate-600');
-      });
-
-      const activeBtn = catId === 'all' ? document.querySelector('.category-btn') : document.getElementById(`cat-btn-${catId}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('bg-white', 'text-slate-600');
-        activeBtn.classList.add('bg-amber-500', 'text-white');
-      }
-
-      renderMenu();
-    }
-
-    function toggleCartModal(show) {
-      const modal = document.getElementById("cart-modal");
-      if (show) {
-        modal.classList.remove("hidden");
-        renderCartDrawer();
-      } else {
-        modal.classList.add("hidden");
-      }
-    }
-
-    function placeOrder() {
-      if (!Object.keys(state.cart).length) {
-        alert("Add items to your cart before proceeding!");
-        return;
-      }
-      alert("Cart ready for checkout integration!");
-    }
-
-    // Startup
-    init();
-  </script>
+  document.getElementById("footer-year").innerText = new Date().getFullYear();
+  init();
+</script>
 </body>
 </html>
