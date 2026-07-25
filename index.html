@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FoodyVilla — Order & Dine</title>
+<title>FoodyVilla — Pure Vegetarian Kitchen</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,75 +17,41 @@
     --chili-dark:#9A331F;
     --turmeric:#E8A33D;
     --bottle:#2F4A3E;
+    --leaf:#4ADE80;
     --line:#D8C9AE;
   }
   *{ box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Inter', sans-serif;
-  }
+  body{ background:var(--paper); color:var(--ink); font-family:'Inter', sans-serif; }
   .font-display{ font-family:'Fraunces', serif; }
   .font-mono{ font-family:'Space Mono', monospace; }
 
-  /* ---------- Ticket / Receipt motif ---------- */
-  .ticket{
-    position:relative;
-    background:var(--paper);
-    border:1px solid var(--line);
-  }
+  .ticket{ position:relative; background:var(--paper); border:1px solid var(--line); }
   .ticket::before, .ticket::after{
-    content:"";
-    position:absolute;
-    left:0; right:0;
-    height:10px;
+    content:""; position:absolute; left:0; right:0; height:10px;
     background-image: radial-gradient(circle at 10px 5px, var(--ink-bg,var(--paper)) 5px, transparent 5.5px);
-    background-size: 20px 10px;
-    background-repeat: repeat-x;
+    background-size: 20px 10px; background-repeat: repeat-x;
   }
   .ticket::before{ top:-5px; }
   .ticket::after{ bottom:-5px; transform:rotate(180deg); }
-  .ticket-dark::before, .ticket-dark::after{
-    background-image: radial-gradient(circle at 10px 5px, var(--ink) 5px, transparent 5.5px);
-  }
 
   .dotted-rule{
     background-image: linear-gradient(to right, var(--line) 55%, transparent 0%);
-    background-position: bottom;
-    background-size: 10px 1px;
-    background-repeat: repeat-x;
+    background-position: bottom; background-size: 10px 1px; background-repeat: repeat-x;
   }
 
-  /* ---------- Hero Slider ---------- */
-  .slide{
-    opacity:0; visibility:hidden;
-    transition: opacity 1.1s ease;
-    position:absolute; inset:0;
-  }
-  .slide.active{ opacity:1; visibility:visible; position:relative; }
-  .hero-dot{ width:8px; height:8px; border-radius:999px; background:rgba(246,239,228,0.4); transition:.3s; }
-  .hero-dot.active{ background:var(--turmeric); width:26px; border-radius:999px; }
+  .marquee-track{ display:flex; width:max-content; animation: scroll-left 26s linear infinite; }
+  @keyframes scroll-left{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
 
-  /* ---------- Marquee ---------- */
-  .marquee-track{
-    display:flex; width:max-content;
-    animation: scroll-left 26s linear infinite;
-  }
-  @keyframes scroll-left{
-    from{ transform:translateX(0); }
-    to{ transform:translateX(-50%); }
+  .hero-pattern{
+    background-image: radial-gradient(circle, rgba(232,163,61,0.14) 1.5px, transparent 1.5px);
+    background-size: 26px 26px;
   }
 
-  /* ---------- Nav underline ---------- */
   .nav-link{ position:relative; }
-  .nav-link::after{
-    content:""; position:absolute; left:0; bottom:-4px; height:2px; width:0%;
-    background:var(--chili); transition:width .25s ease;
-  }
+  .nav-link::after{ content:""; position:absolute; left:0; bottom:-4px; height:2px; width:0%; background:var(--chili); transition:width .25s ease; }
   .nav-link:hover::after{ width:100%; }
 
-  /* ---------- Category pill ---------- */
   .category-btn.active{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
 
   ::-webkit-scrollbar{ height:8px; width:8px; }
@@ -94,16 +60,24 @@
   .reveal{ opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
   .reveal.in{ opacity:1; transform:translateY(0); }
 
+  .steam{ animation: rise 3.5s ease-in-out infinite; transform-origin:bottom; }
+  .steam.d2{ animation-delay:.6s; }
+  .steam.d3{ animation-delay:1.2s; }
+  @keyframes rise{
+    0%{ opacity:0; transform:translateY(0) scaleX(1); }
+    30%{ opacity:.8; }
+    100%{ opacity:0; transform:translateY(-22px) scaleX(1.4); }
+  }
+
   @media (prefers-reduced-motion: reduce){
     .marquee-track{ animation:none; }
-    .slide{ transition:none; }
     .reveal{ transition:none; opacity:1; transform:none; }
+    .steam{ animation:none; opacity:.4; }
   }
 </style>
 </head>
 <body class="pb-24">
 
-<!-- ============ LOADING ============ -->
 <div id="loading" class="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4" style="background:var(--ink)">
   <div class="w-12 h-12 border-4 rounded-full animate-spin" style="border-color:var(--turmeric); border-top-color:transparent;"></div>
   <p class="font-mono text-xs tracking-widest uppercase" style="color:var(--paper-dim)">firing up the tandoor…</p>
@@ -115,13 +89,16 @@
     <a href="#home" class="flex items-center gap-3">
       <img id="outlet-logo" src="" alt="" class="w-10 h-10 rounded-full object-cover hidden border-2" style="border-color:var(--turmeric)" />
       <span id="brand-name" class="font-display font-bold text-2xl tracking-tight" style="color:var(--paper)">FoodyVilla</span>
+      <span class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider" style="background:var(--leaf); color:var(--ink)">
+        <i data-lucide="leaf" class="w-3 h-3"></i> Pure Veg
+      </span>
     </a>
 
     <nav class="hidden md:flex items-center gap-8 font-medium text-sm" style="color:var(--paper)">
       <a href="#home" class="nav-link">Home</a>
       <a href="#about" class="nav-link">About</a>
       <a href="#menu" class="nav-link">Menu</a>
-      <a href="#gallery" class="nav-link">Gallery</a>
+      <a href="#why-us" class="nav-link">Why Us</a>
       <a href="#contact" class="nav-link">Visit Us</a>
     </nav>
 
@@ -133,26 +110,45 @@
 </header>
 
 <!-- ============ HERO ============ -->
-<section id="home" class="relative h-[100svh] min-h-[560px] overflow-hidden" style="background:var(--ink)">
-  <div id="hero-slides" class="absolute inset-0"></div>
-  <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(30,26,23,.55) 0%, rgba(30,26,23,.35) 40%, rgba(30,26,23,.9) 100%);"></div>
+<section id="home" class="relative min-h-[100svh] overflow-hidden hero-pattern flex items-center" style="background:var(--ink)">
+  <div class="relative max-w-6xl mx-auto px-5 md:px-8 grid md:grid-cols-2 gap-10 items-center py-32 md:py-24 w-full">
+    <div>
+      <p class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-4 flex items-center gap-2" style="color:var(--turmeric)">
+        <i data-lucide="leaf" class="w-4 h-4"></i> 100% Vegetarian Kitchen
+      </p>
+      <h1 class="font-display font-black leading-[0.95] text-5xl md:text-7xl mb-6" style="color:var(--paper)">
+        Pure veg,<br/><span style="color:var(--turmeric)">cooked</span> to order.
+      </h1>
+      <p class="max-w-xl text-base md:text-lg mb-8" style="color:var(--paper-dim)">
+        <span id="hero-outlet-name">FoodyVilla</span> is a full vegetarian kitchen — every gravy, every dal, every bread fired fresh after your order lands, never before.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a href="#menu" class="px-7 py-3.5 rounded-full font-bold text-sm transition hover:brightness-110" style="background:var(--chili); color:var(--paper)">View the Menu</a>
+        <a href="#contact" class="px-7 py-3.5 rounded-full font-bold text-sm border-2 transition hover:bg-white/10" style="border-color:var(--paper); color:var(--paper)">Find Us</a>
+      </div>
+    </div>
 
-  <div class="relative h-full max-w-6xl mx-auto px-5 md:px-8 flex flex-col justify-end pb-24 md:pb-28">
-    <p class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-4" style="color:var(--turmeric)">— Fresh · Local · Made to Order —</p>
-    <h1 class="font-display font-black leading-[0.95] text-5xl md:text-7xl lg:text-8xl mb-6" style="color:var(--paper)">
-      Real food,<br/>
-      <span style="color:var(--turmeric)">cooked</span> to order.
-    </h1>
-    <p class="max-w-xl text-base md:text-lg mb-8" style="color:var(--paper-dim)">
-      <span id="hero-outlet-name">Your neighbourhood kitchen</span> — every plate fired fresh, every order tracked from our kitchen to your table.
-    </p>
-    <div class="flex flex-wrap gap-4">
-      <a href="#menu" class="px-7 py-3.5 rounded-full font-bold text-sm transition hover:brightness-110" style="background:var(--chili); color:var(--paper)">View the Menu</a>
-      <a href="#contact" class="px-7 py-3.5 rounded-full font-bold text-sm border-2 transition hover:bg-white/10" style="border-color:var(--paper); color:var(--paper)">Find Us</a>
+    <!-- Original SVG illustration: a steaming thali, no stock imagery -->
+    <div class="hidden md:flex justify-center">
+      <svg viewBox="0 0 360 360" class="w-full max-w-md">
+        <circle cx="180" cy="190" r="150" fill="#241E19"/>
+        <circle cx="180" cy="190" r="128" fill="#2A241F" stroke="#3A322A" stroke-width="2"/>
+        <circle cx="180" cy="190" r="108" fill="#F6EFE4"/>
+        <circle cx="180" cy="190" r="30" fill="#E8A33D"/>
+        <circle cx="180" cy="190" r="30" fill="none" stroke="#C1432E" stroke-width="3" stroke-dasharray="4 5"/>
+        <circle cx="120" cy="150" r="20" fill="#2F4A3E"/>
+        <circle cx="240" cy="150" r="20" fill="#C1432E"/>
+        <circle cx="120" cy="235" r="20" fill="#C1432E"/>
+        <circle cx="240" cy="235" r="20" fill="#2F4A3E"/>
+        <rect x="160" y="255" width="40" height="10" rx="5" fill="#E8A33D"/>
+        <g stroke="#E8A33D" stroke-width="4" stroke-linecap="round" opacity=".85">
+          <path class="steam" d="M150 90 C 150 70, 165 70, 165 50" fill="none"/>
+          <path class="steam d2" d="M180 90 C 180 70, 195 70, 195 50" fill="none"/>
+          <path class="steam d3" d="M210 90 C 210 70, 225 70, 225 50" fill="none"/>
+        </g>
+      </svg>
     </div>
   </div>
-
-  <div id="hero-dots" class="absolute bottom-8 right-5 md:right-8 flex gap-2 z-10"></div>
 </section>
 
 <!-- ============ MARQUEE TICKER ============ -->
@@ -168,33 +164,51 @@
   <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
     <div class="reveal">
       <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--chili)">Order No. 001 — Our Story</p>
-      <h2 class="font-display font-bold text-4xl md:text-5xl mb-6 leading-tight">A kitchen that keeps its receipts.</h2>
+      <h2 class="font-display font-bold text-4xl md:text-5xl mb-6 leading-tight">A vegetarian kitchen that keeps its receipts.</h2>
       <p class="text-base md:text-lg leading-relaxed mb-4" style="color:#4A3F35">
-        We started with one tawa, one grinding stone, and a stubborn belief that food tastes better when it's cooked for someone rather than for a queue. Every dish that leaves our kitchen is made after your order lands — not before.
+        FoodyVilla has never cooked meat — not as a diet trend, but as the whole point. Every dal, every paneer gravy, every tandoor bread is built from scratch each day, using no shortcuts and no pre-made bases.
       </p>
       <p class="text-base md:text-lg leading-relaxed mb-8" style="color:#4A3F35">
-        From the first order slip to the last table cleared, we track every plate — so what reaches you is exactly what you asked for, at the temperature it deserves.
+        We fire your order only after it's placed, and track it from kitchen to table — so what reaches you is exactly what you asked for, at the temperature it deserves.
       </p>
 
-      <div class="ticket ticket-dark grid grid-cols-3 divide-x px-2" style="border-color:var(--ink); --ink-bg:var(--paper);">
+      <div class="ticket grid grid-cols-3 divide-x px-2" style="border-color:var(--line); --ink-bg:var(--paper);">
+        <div class="px-4 py-5 text-center">
+          <p class="font-display font-black text-3xl">100%</p>
+          <p class="font-mono text-[10px] uppercase tracking-widest mt-1" style="color:#7A6C5D">Vegetarian</p>
+        </div>
         <div class="px-4 py-5 text-center">
           <p class="font-display font-black text-3xl">7+</p>
-          <p class="font-mono text-[10px] uppercase tracking-widest mt-1" style="color:#7A6C5D">Years Serving</p>
+          <p class="font-mono text-[10px] uppercase tracking-widest mt-1" style="color:#7A6C5D">Years serving</p>
         </div>
         <div class="px-4 py-5 text-center">
-          <p class="font-display font-black text-3xl">120+</p>
-          <p class="font-mono text-[10px] uppercase tracking-widest mt-1" style="color:#7A6C5D">Dishes on rotation</p>
-        </div>
-        <div class="px-4 py-5 text-center">
-          <p class="font-display font-black text-3xl">30k</p>
+          <p class="font-display font-black text-3xl">30k+</p>
           <p class="font-mono text-[10px] uppercase tracking-widest mt-1" style="color:#7A6C5D">Orders fired</p>
         </div>
       </div>
     </div>
 
-    <div class="reveal grid grid-cols-2 gap-4">
-      <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=800&q=80" class="rounded-2xl object-cover h-64 md:h-72 w-full" alt="Chef plating a dish"/>
-      <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=800&q=80" class="rounded-2xl object-cover h-64 md:h-72 w-full mt-8" alt="Restaurant table spread"/>
+    <!-- Original SVG illustration: spice jars, no stock imagery -->
+    <div class="reveal flex justify-center">
+      <svg viewBox="0 0 380 300" class="w-full max-w-md">
+        <ellipse cx="190" cy="270" rx="160" ry="14" fill="#E4D6BC"/>
+        <g>
+          <rect x="60" y="140" width="60" height="110" rx="10" fill="#C1432E"/>
+          <rect x="70" y="120" width="40" height="24" rx="6" fill="#2A241F"/>
+          <circle cx="90" cy="195" r="14" fill="#F6EFE4" opacity=".2"/>
+        </g>
+        <g>
+          <rect x="150" y="100" width="80" height="150" rx="12" fill="#E8A33D"/>
+          <rect x="163" y="76" width="54" height="28" rx="7" fill="#2A241F"/>
+          <circle cx="190" cy="160" r="18" fill="#1E1A17" opacity=".15"/>
+          <circle cx="190" cy="200" r="18" fill="#1E1A17" opacity=".15"/>
+        </g>
+        <g>
+          <rect x="260" y="150" width="58" height="100" rx="10" fill="#2F4A3E"/>
+          <rect x="270" y="130" width="38" height="24" rx="6" fill="#2A241F"/>
+          <path d="M270 190 h38 M270 210 h38" stroke="#F6EFE4" stroke-width="4" stroke-linecap="round" opacity=".4"/>
+        </g>
+      </svg>
     </div>
   </div>
 </section>
@@ -207,13 +221,9 @@
         <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--turmeric)">Order No. 002 — Today's Ticket</p>
         <h2 class="font-display font-bold text-4xl md:text-5xl" style="color:var(--paper)">The Menu</h2>
       </div>
-      <label class="flex items-center gap-2 cursor-pointer px-4 py-2 rounded-full border text-sm font-medium shrink-0" style="border-color:#4A3F35; color:var(--paper-dim)">
-        <input type="checkbox" id="veg-toggle" onchange="renderMenu()" class="sr-only peer" />
-        <span class="w-3 h-3 rounded-full border-2 flex items-center justify-center p-0.5" style="border-color:#4ADE80">
-          <span class="w-1.5 h-1.5 rounded-full" style="background:#4ADE80"></span>
-        </span>
-        Veg Only
-      </label>
+      <span class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium" style="background:var(--leaf); color:var(--ink)">
+        <i data-lucide="leaf" class="w-4 h-4"></i> Everything here is vegetarian
+      </span>
     </div>
 
     <div id="offers-section" class="hidden mb-10">
@@ -230,17 +240,32 @@
   </div>
 </section>
 
-<!-- ============ GALLERY ============ -->
-<section id="gallery" class="max-w-6xl mx-auto px-5 md:px-8 py-20 md:py-28">
-  <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--chili)">Order No. 003 — From the Pass</p>
-  <h2 class="font-display font-bold text-4xl md:text-5xl mb-10">A peek in the kitchen.</h2>
+<!-- ============ WHY US ============ -->
+<section id="why-us" class="max-w-6xl mx-auto px-5 md:px-8 py-20 md:py-28">
+  <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--chili)">Order No. 003 — Why FoodyVilla</p>
+  <h2 class="font-display font-bold text-4xl md:text-5xl mb-12">Nothing hidden in the gravy.</h2>
 
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[160px] md:auto-rows-[190px]">
-    <img class="col-span-2 row-span-2 rounded-2xl object-cover w-full h-full" src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=80" alt="Thali spread"/>
-    <img class="rounded-2xl object-cover w-full h-full" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80" alt="Grilled dish"/>
-    <img class="rounded-2xl object-cover w-full h-full" src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80" alt="Fresh salad"/>
-    <img class="rounded-2xl object-cover w-full h-full" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80" alt="Restaurant interior"/>
-    <img class="col-span-2 rounded-2xl object-cover w-full h-full" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80" alt="Food spread on table"/>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+    <div class="ticket p-6 text-center" style="--ink-bg:var(--paper)">
+      <i data-lucide="leaf" class="w-7 h-7 mx-auto mb-3" style="color:var(--bottle)"></i>
+      <h3 class="font-display font-bold mb-1">100% Vegetarian</h3>
+      <p class="text-xs" style="color:#7A6C5D">No meat, no eggs, ever — a fully veg kitchen and menu.</p>
+    </div>
+    <div class="ticket p-6 text-center" style="--ink-bg:var(--paper)">
+      <i data-lucide="sprout" class="w-7 h-7 mx-auto mb-3" style="color:var(--bottle)"></i>
+      <h3 class="font-display font-bold mb-1">Fresh Daily</h3>
+      <p class="text-xs" style="color:#7A6C5D">Produce and paneer sourced and prepped every morning.</p>
+    </div>
+    <div class="ticket p-6 text-center" style="--ink-bg:var(--paper)">
+      <i data-lucide="flame" class="w-7 h-7 mx-auto mb-3" style="color:var(--chili)"></i>
+      <h3 class="font-display font-bold mb-1">Made to Order</h3>
+      <p class="text-xs" style="color:#7A6C5D">Nothing pre-cooked and held — your ticket fires your plate.</p>
+    </div>
+    <div class="ticket p-6 text-center" style="--ink-bg:var(--paper)">
+      <i data-lucide="shield-check" class="w-7 h-7 mx-auto mb-3" style="color:var(--turmeric)"></i>
+      <h3 class="font-display font-bold mb-1">Hygienic Kitchen</h3>
+      <p class="text-xs" style="color:#7A6C5D">Tracked prep and service from order to table.</p>
+    </div>
   </div>
 </section>
 
@@ -252,11 +277,11 @@
 
     <div class="grid md:grid-cols-3 gap-6">
       <div class="ticket p-6" style="--ink-bg:var(--paper-dim)">
-        <p class="font-display text-lg leading-snug mb-4">"Ordered the thali twice this week. Everything arrives hot, exactly on time — feels like they actually watch the kitchen queue."</p>
+        <p class="font-display text-lg leading-snug mb-4">"Ordered the paneer thali twice this week. Everything arrives hot and exactly on time."</p>
         <p class="font-mono text-xs uppercase tracking-widest" style="color:#7A6C5D">— Priya S., Regular</p>
       </div>
       <div class="ticket p-6" style="--ink-bg:var(--paper-dim)">
-        <p class="font-display text-lg leading-snug mb-4">"Best dine-in experience in the area. The staff knows the menu inside out and the veg options are never an afterthought."</p>
+        <p class="font-display text-lg leading-snug mb-4">"Best pure veg option in the area. The dal makhani alone is worth the trip."</p>
         <p class="font-mono text-xs uppercase tracking-widest" style="color:#7A6C5D">— Rohit M., Weekend regular</p>
       </div>
       <div class="ticket p-6" style="--ink-bg:var(--paper-dim)">
@@ -269,7 +294,7 @@
 
 <!-- ============ CONTACT / VISIT ============ -->
 <section id="contact" class="py-20 md:py-28" style="background:var(--ink)">
-  <div class="max-w-6xl mx-auto px-5 md:px-8 grid md:grid-cols-2 gap-12">
+  <div class="max-w-6xl mx-auto px-5 md:px-8 grid md:grid-cols-2 gap-12 items-center">
     <div>
       <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--turmeric)">Order No. 005 — Find Us</p>
       <h2 class="font-display font-bold text-4xl md:text-5xl mb-8" style="color:var(--paper)">Come sit at the table.</h2>
@@ -296,9 +321,15 @@
       </div>
     </div>
 
-    <div class="rounded-2xl overflow-hidden h-72 md:h-full min-h-[300px]">
-      <iframe class="w-full h-full grayscale contrast-125" style="filter:invert(0.92) hue-rotate(180deg);" loading="lazy"
-        src="https://www.google.com/maps?q=Raipur,Chhattisgarh&output=embed"></iframe>
+    <!-- Original SVG illustration: map pin, no external map embed -->
+    <div class="flex justify-center">
+      <svg viewBox="0 0 320 320" class="w-full max-w-xs">
+        <circle cx="160" cy="170" r="120" fill="none" stroke="#3A322A" stroke-width="2" stroke-dasharray="3 8"/>
+        <circle cx="160" cy="170" r="80" fill="none" stroke="#3A322A" stroke-width="2" stroke-dasharray="3 8"/>
+        <path d="M160 90 C 120 90, 100 120, 100 155 C 100 200, 160 250, 160 250 C 160 250, 220 200, 220 155 C 220 120, 200 90, 160 90 Z" fill="var(--chili)"/>
+        <circle cx="160" cy="152" r="24" fill="var(--paper)"/>
+        <circle cx="160" cy="152" r="10" fill="var(--turmeric)"/>
+      </svg>
     </div>
   </div>
 </section>
@@ -307,7 +338,7 @@
 <footer class="py-10" style="background:#151210">
   <div class="max-w-6xl mx-auto px-5 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
     <span class="font-display font-bold text-lg" style="color:var(--paper)">FoodyVilla</span>
-    <p class="font-mono text-[11px]" style="color:#7A6C5D">© <span id="footer-year"></span> FoodyVilla. Every plate, tracked from kitchen to table.</p>
+    <p class="font-mono text-[11px]" style="color:#7A6C5D">© <span id="footer-year"></span> FoodyVilla · Pure Vegetarian Kitchen</p>
   </div>
 </footer>
 
@@ -339,51 +370,70 @@
 <script>
   const FUNCTION_URL = "https://qxqnwfcljizyscrqkntd.supabase.co/functions/v1/public_website";
 
-  let state = {
-    outlet: null, categories: [], banners: [], offers: [], menu: [],
-    cart: {}, selectedCategory: 'all'
-  };
+  let state = { outlet: null, categories: [], banners: [], offers: [], menu: [], cart: {}, selectedCategory: 'all' };
 
-  // Fallback demo data so the site always looks complete even before the live menu loads
+  // Icon shown per category — no photos anywhere, just lucide glyphs
+  const CATEGORY_ICON = {
+    1: 'flame', 2: 'soup', 3: 'circle-dot', 4: 'chef-hat',
+    5: 'salad', 6: 'wheat', 7: 'ice-cream-cone', 8: 'coffee'
+  };
+  function categoryIcon(catId) { return CATEGORY_ICON[catId] || 'utensils'; }
+
+  // Full vegetarian menu — used until your live Supabase menu responds
   const FALLBACK = {
     outlet: {
-      name: "FoodyVilla",
-      opens_at: "11:00:00", closes_at: "23:00:00",
-      logo_url: null,
-      address: "MG Road, Raipur, Chhattisgarh",
-      phone: "+91 98765 43210"
+      name: "FoodyVilla", opens_at: "11:00:00", closes_at: "23:00:00", logo_url: null,
+      address: "MG Road, Raipur, Chhattisgarh", phone: "+91 98765 43210"
     },
     categories: [
       { id: 1, name: "Starters", emoji: "🥟" },
-      { id: 2, name: "Mains", emoji: "🍛" },
-      { id: 3, name: "Breads", emoji: "🫓" },
-      { id: 4, name: "Desserts", emoji: "🍮" },
-      { id: 5, name: "Beverages", emoji: "🥤" }
+      { id: 2, name: "Soups", emoji: "🥣" },
+      { id: 3, name: "South Indian", emoji: "🫓" },
+      { id: 4, name: "Paneer Specials", emoji: "🧀" },
+      { id: 5, name: "Veg Curries", emoji: "🍛" },
+      { id: 6, name: "Dal & Rice", emoji: "🍚" },
+      { id: 7, name: "Breads", emoji: "🥖" },
+      { id: 8, name: "Desserts", emoji: "🍮" },
+      { id: 9, name: "Beverages", emoji: "🥤" }
     ],
     banners: [],
     offers: [
-      { title: "Weekend Thali Combo", description: "Unlimited thali, served fresh — every weekend.", img_url: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=300&q=80" },
-      { title: "Family Feast Deal", description: "Order for 4+ and save 15% on mains.", img_url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=300&q=80" }
+      { title: "Weekend Thali Combo", description: "Unlimited veg thali, served fresh — every weekend." },
+      { title: "Family Feast Deal", description: "Order for 4+ and save 15% on mains." }
     ],
     menu: [
-      { menu_item_id: 1, category_id: 1, name: "Paneer Tikka", description: "Char-grilled cottage cheese, smoked and spiced.", is_veg: true, is_bestseller: true, in_stock: true, images: ["https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 220, original_price: 260, discount_percentage: 15 } },
-      { menu_item_id: 2, category_id: 1, name: "Chicken Seekh Kebab", description: "Minced chicken skewers, roasted over coal.", is_veg: false, is_bestseller: true, in_stock: true, images: ["https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 260, original_price: 260, discount_percentage: 0 } },
-      { menu_item_id: 3, category_id: 2, name: "Dal Makhani", description: "Slow-cooked black lentils, finished with cream.", is_veg: true, is_bestseller: false, in_stock: true, images: ["https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 190, original_price: 190, discount_percentage: 0 } },
-      { menu_item_id: 4, category_id: 2, name: "Butter Chicken", description: "Tandoori chicken in a rich tomato-butter gravy.", is_veg: false, is_bestseller: true, in_stock: true, images: ["https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 290, original_price: 320, discount_percentage: 9 } },
-      { menu_item_id: 5, category_id: 3, name: "Butter Naan", description: "Tandoor-fired flatbread, brushed with butter.", is_veg: true, is_bestseller: false, in_stock: true, images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 45, original_price: 45, discount_percentage: 0 } },
-      { menu_item_id: 6, category_id: 4, name: "Gulab Jamun", description: "Warm milk dumplings soaked in cardamom syrup.", is_veg: true, is_bestseller: false, in_stock: true, images: ["https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 90, original_price: 90, discount_percentage: 0 } },
-      { menu_item_id: 7, category_id: 5, name: "Masala Chaas", description: "Spiced buttermilk, served chilled.", is_veg: true, is_bestseller: false, in_stock: true, images: ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 60, original_price: 60, discount_percentage: 0 } },
-      { menu_item_id: 8, category_id: 2, name: "Veg Biryani", description: "Fragrant basmati, slow-dum cooked with vegetables.", is_veg: true, is_bestseller: false, in_stock: false, images: ["https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80"], pricing: { final_price: 210, original_price: 210, discount_percentage: 0 } }
+      { menu_item_id: 1, category_id: 1, name: "Paneer Tikka", description: "Char-grilled cottage cheese, smoked and spiced.", is_bestseller: true, in_stock: true, pricing: { final_price: 220, original_price: 260, discount_percentage: 15 } },
+      { menu_item_id: 2, category_id: 1, name: "Hara Bhara Kebab", description: "Spinach and green pea patties, shallow fried.", is_bestseller: false, in_stock: true, pricing: { final_price: 180, original_price: 180, discount_percentage: 0 } },
+      { menu_item_id: 3, category_id: 1, name: "Veg Manchurian (Dry)", description: "Crisp vegetable dumplings tossed in a spiced garlic sauce.", is_bestseller: false, in_stock: true, pricing: { final_price: 190, original_price: 190, discount_percentage: 0 } },
+      { menu_item_id: 4, category_id: 1, name: "Chilli Paneer Dry", description: "Battered paneer wok-tossed with peppers and onions.", is_bestseller: false, in_stock: true, pricing: { final_price: 230, original_price: 230, discount_percentage: 0 } },
+      { menu_item_id: 5, category_id: 2, name: "Tomato Basil Shorba", description: "Slow-simmered tomato broth, finished with fresh basil.", is_bestseller: false, in_stock: true, pricing: { final_price: 120, original_price: 120, discount_percentage: 0 } },
+      { menu_item_id: 6, category_id: 2, name: "Sweet Corn Veg Soup", description: "Classic comfort soup loaded with corn and vegetables.", is_bestseller: false, in_stock: true, pricing: { final_price: 130, original_price: 130, discount_percentage: 0 } },
+      { menu_item_id: 7, category_id: 3, name: "Masala Dosa", description: "Crisp rice crepe filled with spiced potato masala.", is_bestseller: true, in_stock: true, pricing: { final_price: 140, original_price: 140, discount_percentage: 0 } },
+      { menu_item_id: 8, category_id: 3, name: "Rava Idli (4 pcs)", description: "Steamed semolina cakes, served with sambar and chutney.", is_bestseller: false, in_stock: true, pricing: { final_price: 110, original_price: 110, discount_percentage: 0 } },
+      { menu_item_id: 9, category_id: 3, name: "Uttapam", description: "Thick rice pancake topped with onion, tomato and chilli.", is_bestseller: false, in_stock: true, pricing: { final_price: 150, original_price: 150, discount_percentage: 0 } },
+      { menu_item_id: 10, category_id: 4, name: "Paneer Butter Masala", description: "Cottage cheese in a rich tomato-butter gravy.", is_bestseller: true, in_stock: true, pricing: { final_price: 260, original_price: 290, discount_percentage: 10 } },
+      { menu_item_id: 11, category_id: 4, name: "Kadai Paneer", description: "Paneer and peppers tossed in a coarse kadai masala.", is_bestseller: false, in_stock: true, pricing: { final_price: 250, original_price: 250, discount_percentage: 0 } },
+      { menu_item_id: 12, category_id: 4, name: "Palak Paneer", description: "Cottage cheese cubes in a smooth spiced spinach gravy.", is_bestseller: false, in_stock: true, pricing: { final_price: 240, original_price: 240, discount_percentage: 0 } },
+      { menu_item_id: 13, category_id: 5, name: "Malai Kofta", description: "Fried vegetable-paneer dumplings in a creamy cashew gravy.", is_bestseller: false, in_stock: true, pricing: { final_price: 240, original_price: 240, discount_percentage: 0 } },
+      { menu_item_id: 14, category_id: 5, name: "Mixed Veg Curry", description: "Seasonal vegetables simmered in a light onion-tomato gravy.", is_bestseller: false, in_stock: true, pricing: { final_price: 200, original_price: 200, discount_percentage: 0 } },
+      { menu_item_id: 15, category_id: 5, name: "Bhindi Masala", description: "Okra stir-fried with onions and everyday spices.", is_bestseller: false, in_stock: false, pricing: { final_price: 180, original_price: 180, discount_percentage: 0 } },
+      { menu_item_id: 16, category_id: 6, name: "Dal Makhani", description: "Slow-cooked black lentils, finished with cream.", is_bestseller: true, in_stock: true, pricing: { final_price: 190, original_price: 190, discount_percentage: 0 } },
+      { menu_item_id: 17, category_id: 6, name: "Dal Tadka", description: "Yellow lentils tempered with cumin, garlic and ghee.", is_bestseller: false, in_stock: true, pricing: { final_price: 160, original_price: 160, discount_percentage: 0 } },
+      { menu_item_id: 18, category_id: 6, name: "Veg Biryani", description: "Fragrant basmati, slow dum-cooked with vegetables.", is_bestseller: false, in_stock: true, pricing: { final_price: 220, original_price: 220, discount_percentage: 0 } },
+      { menu_item_id: 19, category_id: 6, name: "Jeera Rice", description: "Basmati rice tempered with cumin and ghee.", is_bestseller: false, in_stock: true, pricing: { final_price: 150, original_price: 150, discount_percentage: 0 } },
+      { menu_item_id: 20, category_id: 7, name: "Butter Naan", description: "Tandoor-fired flatbread, brushed with butter.", is_bestseller: false, in_stock: true, pricing: { final_price: 45, original_price: 45, discount_percentage: 0 } },
+      { menu_item_id: 21, category_id: 7, name: "Garlic Naan", description: "Tandoor-fired flatbread topped with garlic and coriander.", is_bestseller: false, in_stock: true, pricing: { final_price: 55, original_price: 55, discount_percentage: 0 } },
+      { menu_item_id: 22, category_id: 7, name: "Laccha Paratha", description: "Layered, flaky whole-wheat flatbread.", is_bestseller: false, in_stock: true, pricing: { final_price: 50, original_price: 50, discount_percentage: 0 } },
+      { menu_item_id: 23, category_id: 8, name: "Gulab Jamun (2 pcs)", description: "Warm milk dumplings soaked in cardamom syrup.", is_bestseller: true, in_stock: true, pricing: { final_price: 90, original_price: 90, discount_percentage: 0 } },
+      { menu_item_id: 24, category_id: 8, name: "Rasmalai (2 pcs)", description: "Soft cheese discs in saffron-cardamom milk.", is_bestseller: false, in_stock: true, pricing: { final_price: 110, original_price: 110, discount_percentage: 0 } },
+      { menu_item_id: 25, category_id: 8, name: "Gajar Ka Halwa", description: "Slow-cooked carrot pudding with ghee and nuts.", is_bestseller: false, in_stock: true, pricing: { final_price: 130, original_price: 130, discount_percentage: 0 } },
+      { menu_item_id: 26, category_id: 9, name: "Masala Chaas", description: "Spiced buttermilk, served chilled.", is_bestseller: false, in_stock: true, pricing: { final_price: 60, original_price: 60, discount_percentage: 0 } },
+      { menu_item_id: 27, category_id: 9, name: "Sweet Lassi", description: "Thick, chilled yoghurt drink, lightly sweetened.", is_bestseller: false, in_stock: true, pricing: { final_price: 90, original_price: 90, discount_percentage: 0 } },
+      { menu_item_id: 28, category_id: 9, name: "Filter Coffee", description: "South Indian style, brewed strong and frothed.", is_bestseller: false, in_stock: true, pricing: { final_price: 60, original_price: 60, discount_percentage: 0 } }
     ]
   };
 
-  const HERO_IMAGES = [
-    "https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1600&q=80"
-  ];
-
-  const MARQUEE_ITEMS = ["Fresh Tandoor Daily", "★", "No Frozen Shortcuts", "★", "Table & Takeaway", "★", "Order Tracked Live", "★", "Made After You Order", "★"];
+  const MARQUEE_ITEMS = ["100% Pure Vegetarian", "★", "No Frozen Shortcuts", "★", "Table & Takeaway", "★", "Order Tracked Live", "★", "Made After You Order", "★"];
 
   async function init() {
     try {
@@ -405,7 +455,6 @@
       renderOffers();
       renderCategories();
       renderMenu();
-      buildHeroSlider();
       buildMarquee();
       document.getElementById("loading").classList.add("hidden");
       lucide.createIcons();
@@ -416,12 +465,11 @@
 
   function renderOutletDetails() {
     if (!state.outlet) return;
-    document.title = state.outlet.name + " — Order & Dine";
+    document.title = state.outlet.name + " — Pure Vegetarian Kitchen";
     document.getElementById("brand-name").innerText = state.outlet.name;
     document.getElementById("hero-outlet-name").innerText = state.outlet.name;
     if (state.outlet.opens_at && state.outlet.closes_at) {
-      document.getElementById("contact-timing").innerText =
-        `Open daily, ${fmtTime(state.outlet.opens_at)} – ${fmtTime(state.outlet.closes_at)}`;
+      document.getElementById("contact-timing").innerText = `Open daily, ${fmtTime(state.outlet.opens_at)} – ${fmtTime(state.outlet.closes_at)}`;
     }
     if (state.outlet.address) document.getElementById("contact-address").innerText = state.outlet.address;
     if (state.outlet.phone) document.getElementById("contact-phone").innerText = state.outlet.phone;
@@ -439,29 +487,6 @@
     return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
   }
 
-  function buildHeroSlider() {
-    const imgs = state.banners.length ? state.banners.map(b => b.img_url) : HERO_IMAGES;
-    const container = document.getElementById("hero-slides");
-    const dots = document.getElementById("hero-dots");
-    container.innerHTML = imgs.map((src, i) => `
-      <div class="slide ${i === 0 ? 'active' : ''}" data-i="${i}">
-        <img src="${src}" class="w-full h-full object-cover" alt="Signature dish"/>
-      </div>
-    `).join('');
-    dots.innerHTML = imgs.map((_, i) => `<span class="hero-dot ${i===0?'active':''}" data-i="${i}"></span>`).join('');
-
-    let current = 0;
-    setInterval(() => {
-      const slides = container.querySelectorAll('.slide');
-      const dotEls = dots.querySelectorAll('.hero-dot');
-      slides[current].classList.remove('active');
-      dotEls[current].classList.remove('active');
-      current = (current + 1) % slides.length;
-      slides[current].classList.add('active');
-      dotEls[current].classList.add('active');
-    }, 5000);
-  }
-
   function buildMarquee() {
     const html = MARQUEE_ITEMS.map(t => `<span class="${t==='★' ? '' : 'font-display'}" style="${t==='★' ? 'color:var(--turmeric)' : ''}">${t}</span>`).join('');
     document.getElementById("marquee-a").innerHTML = html;
@@ -473,13 +498,16 @@
     document.getElementById("offers-section").classList.remove("hidden");
     document.getElementById("offers-container").innerHTML = state.offers.map(o => `
       <div class="ticket p-4 flex gap-4 items-center" style="--ink-bg:var(--ink)">
-        ${o.img_url ? `<img src="${o.img_url}" class="w-16 h-16 rounded-xl object-cover shrink-0"/>` : ''}
+        <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0" style="background:var(--turmeric)">
+          <i data-lucide="tag" class="w-6 h-6" style="color:var(--ink)"></i>
+        </div>
         <div>
           <h4 class="font-display font-bold" style="color:var(--paper)">${o.title}</h4>
           <p class="text-xs mt-1" style="color:var(--paper-dim)">${o.description || ''}</p>
         </div>
       </div>
     `).join('');
+    lucide.createIcons();
   }
 
   function renderCategories() {
@@ -494,13 +522,7 @@
 
   function renderMenu() {
     const menuGrid = document.getElementById("menu-grid");
-    const vegOnly = document.getElementById("veg-toggle").checked;
-
-    const filtered = state.menu.filter(item => {
-      const matchesCategory = state.selectedCategory === 'all' || item.category_id === state.selectedCategory;
-      const matchesVeg = !vegOnly || item.is_veg;
-      return matchesCategory && matchesVeg;
-    });
+    const filtered = state.menu.filter(item => state.selectedCategory === 'all' || item.category_id === state.selectedCategory);
 
     if (!filtered.length) {
       menuGrid.innerHTML = `<div class="col-span-full py-16 text-center font-mono text-sm" style="color:var(--paper-dim)">No items on this ticket yet.</div>`;
@@ -509,14 +531,14 @@
 
     menuGrid.innerHTML = filtered.map(item => {
       const cartQty = state.cart[item.menu_item_id]?.qty || 0;
-      const firstImg = Array.isArray(item.images) && item.images.length ? item.images[0] : null;
+      const icon = categoryIcon(item.category_id);
 
       return `
         <div class="ticket p-4 flex gap-4 items-start ${!item.in_stock ? 'opacity-50' : ''}" style="--ink-bg:var(--ink)">
           <div class="flex-1 space-y-1.5">
             <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full border-2 ${item.is_veg ? 'border-green-500' : 'border-red-500'} flex items-center justify-center p-0.5">
-                <span class="w-1.5 h-1.5 rounded-full ${item.is_veg ? 'bg-green-500' : 'bg-red-500'}"></span>
+              <span class="w-3 h-3 rounded-full border-2 border-green-500 flex items-center justify-center p-0.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
               </span>
               ${item.is_bestseller ? `<span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full" style="background:var(--turmeric); color:var(--ink)">BESTSELLER</span>` : ''}
             </div>
@@ -533,7 +555,9 @@
           </div>
 
           <div class="w-24 flex flex-col items-center gap-2 shrink-0">
-            ${firstImg ? `<img src="${firstImg}" class="w-24 h-20 rounded-xl object-cover"/>` : `<div class="w-24 h-20 rounded-xl" style="background:#2A241F"></div>`}
+            <div class="w-24 h-20 rounded-xl flex items-center justify-center" style="background:#2A241F">
+              <i data-lucide="${icon}" class="w-8 h-8" style="color:var(--turmeric)"></i>
+            </div>
 
             ${!item.in_stock ? `
               <span class="text-[10px] font-mono font-bold py-1" style="color:var(--chili)">SOLD OUT</span>
