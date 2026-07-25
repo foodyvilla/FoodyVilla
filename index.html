@@ -1,675 +1,482 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FoodyVilla — Pure Vegetarian Kitchen</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#1E1A17;
-    --paper:#F6EFE4;
-    --paper-dim:#EEE2CD;
-    --chili:#C1432E;
-    --chili-dark:#9A331F;
-    --turmeric:#E8A33D;
-    --bottle:#2F4A3E;
-    --leaf:#4ADE80;
-    --line:#D8C9AE;
-  }
-  *{ box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
-  body{ background:var(--paper); color:var(--ink); font-family:'Inter', sans-serif; }
-  .font-display{ font-family:'Fraunces', serif; }
-  .font-mono{ font-family:'Space Mono', monospace; }
-
-  .ticket{ position:relative; background:var(--paper); border:1px solid var(--line); }
-  .ticket::before, .ticket::after{
-    content:""; position:absolute; left:0; right:0; height:10px;
-    background-image: radial-gradient(circle at 10px 5px, var(--ink-bg,var(--paper)) 5px, transparent 5.5px);
-    background-size: 20px 10px; background-repeat: repeat-x;
-  }
-  .ticket::before{ top:-5px; }
-  .ticket::after{ bottom:-5px; transform:rotate(180deg); }
-
-  .dotted-rule{
-    background-image: linear-gradient(to right, var(--line) 55%, transparent 0%);
-    background-position: bottom; background-size: 10px 1px; background-repeat: repeat-x;
-  }
-
-  .marquee-track{ display:flex; width:max-content; animation: scroll-left 26s linear infinite; }
-  @keyframes scroll-left{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
-
-  .hero-pattern{
-    background-image: radial-gradient(circle, rgba(232,163,61,0.14) 1.5px, transparent 1.5px);
-    background-size: 26px 26px;
-  }
-
-  .nav-link{ position:relative; }
-  .nav-link::after{ content:""; position:absolute; left:0; bottom:-4px; height:2px; width:0%; background:var(--chili); transition:width .25s ease; }
-  .nav-link:hover::after{ width:100%; }
-
-  .category-btn.active{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
-
-  ::-webkit-scrollbar{ height:8px; width:8px; }
-  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:99px; }
-
-  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
-  .reveal.in{ opacity:1; transform:translateY(0); }
-
-  .steam{ animation: rise 3.5s ease-in-out infinite; transform-origin:bottom; }
-  .steam.d2{ animation-delay:.6s; }
-  .steam.d3{ animation-delay:1.2s; }
-  @keyframes rise{
-    0%{ opacity:0; transform:translateY(0) scaleX(1); }
-    30%{ opacity:.8; }
-    100%{ opacity:0; transform:translateY(-22px) scaleX(1.4); }
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    .marquee-track{ animation:none; }
-    .reveal{ transition:none; opacity:1; transform:none; }
-    .steam{ animation:none; opacity:.4; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restaurant Menu & Ordering</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Swiper.js CSS (For Sliders) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    /* Custom scrollbar for category tabs */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
 </head>
-<body class="pb-24">
+<body class="bg-slate-50 text-slate-800 pb-28 min-h-screen">
 
-<div id="loading" class="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4" style="background:var(--ink)">
-  <div class="w-12 h-12 border-4 rounded-full animate-spin" style="border-color:var(--turmeric); border-top-color:transparent;"></div>
-  <p class="font-mono text-xs tracking-widest uppercase" style="color:var(--paper-dim)">firing up the tandoor…</p>
-</div>
-
-<!-- ============ HEADER ============ -->
-<header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-all duration-300" style="background:transparent;">
-  <div class="max-w-6xl mx-auto px-5 md:px-8 h-20 flex items-center justify-between">
-    <a href="#home" class="flex items-center gap-3">
-      <img id="outlet-logo" src="" alt="" class="w-10 h-10 rounded-full object-cover hidden border-2" style="border-color:var(--turmeric)" />
-      <span id="brand-name" class="font-display font-bold text-2xl tracking-tight" style="color:var(--paper)">FoodyVilla</span>
-      <span class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider" style="background:var(--leaf); color:var(--ink)">
-        <i data-lucide="leaf" class="w-3 h-3"></i> Pure Veg
-      </span>
-    </a>
-
-    <nav class="hidden md:flex items-center gap-8 font-medium text-sm" style="color:var(--paper)">
-      <a href="#home" class="nav-link">Home</a>
-      <a href="#about" class="nav-link">About</a>
-      <a href="#menu" class="nav-link">Menu</a>
-      <a href="#why-us" class="nav-link">Why Us</a>
-      <a href="#contact" class="nav-link">Visit Us</a>
-    </nav>
-
-    <button onclick="toggleCartModal(true)" class="relative px-4 py-2.5 rounded-full font-mono text-xs font-bold flex items-center gap-2 transition hover:brightness-110" style="background:var(--chili); color:var(--paper)">
-      <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-      <span id="cart-btn-text">CART · 0</span>
-    </button>
+  <!-- Loading Screen -->
+  <div id="loading" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center gap-3">
+    <div class="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-slate-600 text-sm font-semibold tracking-wide">Loading delicious menu...</p>
   </div>
-</header>
 
-<!-- ============ HERO ============ -->
-<section id="home" class="relative min-h-[100svh] overflow-hidden hero-pattern flex items-center" style="background:var(--ink)">
-  <div class="relative max-w-6xl mx-auto px-5 md:px-8 grid md:grid-cols-2 gap-10 items-center py-32 md:py-24 w-full">
-    <div>
-      <p class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-4 flex items-center gap-2" style="color:var(--turmeric)">
-        <i data-lucide="leaf" class="w-4 h-4"></i> 100% Vegetarian Kitchen
-      </p>
-      <h1 class="font-display font-black leading-[0.95] text-5xl md:text-7xl mb-6" style="color:var(--paper)">
-        Pure veg,<br/><span style="color:var(--turmeric)">cooked</span> to order.
-      </h1>
-      <p class="max-w-xl text-base md:text-lg mb-8" style="color:var(--paper-dim)">
-        <span id="hero-outlet-name">FoodyVilla</span> is a full vegetarian kitchen — every gravy, every dal, every bread fired fresh after your order lands, never before.
-      </p>
-      <div class="flex flex-wrap gap-4">
-        <a href="#menu" class="px-7 py-3.5 rounded-full font-bold text-sm transition hover:brightness-110" style="background:var(--chili); color:var(--paper)">View the Menu</a>
-        <a href="#contact" class="px-7 py-3.5 rounded-full font-bold text-sm border-2 transition hover:bg-white/10" style="border-color:var(--paper); color:var(--paper)">Find Us</a>
-      </div>
-    </div>
-
-    <!-- Original SVG illustration: a steaming thali, no stock imagery -->
-    <div class="hidden md:flex justify-center">
-      <svg viewBox="0 0 360 360" class="w-full max-w-md">
-        <circle cx="180" cy="190" r="150" fill="#241E19"/>
-        <circle cx="180" cy="190" r="128" fill="#2A241F" stroke="#3A322A" stroke-width="2"/>
-        <circle cx="180" cy="190" r="108" fill="#F6EFE4"/>
-        <circle cx="180" cy="190" r="30" fill="#E8A33D"/>
-        <circle cx="180" cy="190" r="30" fill="none" stroke="#C1432E" stroke-width="3" stroke-dasharray="4 5"/>
-        <circle cx="120" cy="150" r="20" fill="#2F4A3E"/>
-        <circle cx="240" cy="150" r="20" fill="#C1432E"/>
-        <circle cx="120" cy="235" r="20" fill="#C1432E"/>
-        <circle cx="240" cy="235" r="20" fill="#2F4A3E"/>
-        <rect x="160" y="255" width="40" height="10" rx="5" fill="#E8A33D"/>
-        <g stroke="#E8A33D" stroke-width="4" stroke-linecap="round" opacity=".85">
-          <path class="steam" d="M150 90 C 150 70, 165 70, 165 50" fill="none"/>
-          <path class="steam d2" d="M180 90 C 180 70, 195 70, 195 50" fill="none"/>
-          <path class="steam d3" d="M210 90 C 210 70, 225 70, 225 50" fill="none"/>
-        </g>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- ============ MARQUEE TICKER ============ -->
-<div class="overflow-hidden py-4 border-y" style="background:var(--ink); border-color:var(--ink)">
-  <div class="marquee-track font-display text-xl md:text-2xl font-medium" style="color:var(--paper)">
-    <span class="flex items-center gap-6 pr-6" id="marquee-a"></span>
-    <span class="flex items-center gap-6 pr-6" id="marquee-b"></span>
-  </div>
-</div>
-
-<!-- ============ ABOUT ============ -->
-<section id="about" class="max-w-6xl mx-auto px-5 md:px-8 py-20 md:py-28">
-  <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-    <div class="reveal">
-      <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--chili)">Order No. 001 — Our Story</p>
-      <h2 class="font-display font-bold text-4xl md:text-5xl mb-6 leading-tight">A vegetarian kitchen that keeps its receipts.</h2>
-      <p class="text-base md:text-lg leading-relaxed mb-4" style="color:#4A3F35">
-        FoodyVilla has never cooked meat — not as a diet trend, but as the whole point. Every dal, every paneer gravy, every tandoor bread is built from scratch each day, using no shortcuts and no pre-made bases.
-      </p>
-      <p class="text-base md:text-lg leading-relaxed mb-8" style="color:#4A3F35">
-        We fire your order only after it's placed, and track it from kitchen to table — so what reaches you is exactly what you asked for, at the temperature it deserves.
-      </p>
-
-      <div class="ticket grid grid-cols-3 divide-x px-2" style="border-color:var(--line); --ink-bg:var(--paper);">
-        <div class="px-4 py-5 text-center">
-          <p class="font-display font-black text-3xl">100%</p>
-          <p class="font-mono text-[10px] uppercase tracking-widest mt-1" style="color:#7A6C5D">Vegetarian</p>
-        </div>
-        <div class="px-4 py-5 text-center">
-          <p class="font-display font-black text-3xl">7+</p>
-          <p class="font-mono text-[10px] uppercase tracking-widest mt-1" style="color:#7A6C5D">Years serving</p>
-        </div>
-        <div class="px-4 py-5 text-center">
-          <p class="font-display font-black text-3xl">30k+</p>
-          <p class="font-mono text-[10px] uppercase tracking-widest mt-1" style="color:#7A6C5D">Orders fired</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Original SVG illustration: spice jars, no stock imagery -->
-    <div class="reveal flex justify-center">
-      <svg viewBox="0 0 380 300" class="w-full max-w-md">
-        <ellipse cx="190" cy="270" rx="160" ry="14" fill="#E4D6BC"/>
-        <g>
-          <rect x="60" y="140" width="60" height="110" rx="10" fill="#C1432E"/>
-          <rect x="70" y="120" width="40" height="24" rx="6" fill="#2A241F"/>
-          <circle cx="90" cy="195" r="14" fill="#F6EFE4" opacity=".2"/>
-        </g>
-        <g>
-          <rect x="150" y="100" width="80" height="150" rx="12" fill="#E8A33D"/>
-          <rect x="163" y="76" width="54" height="28" rx="7" fill="#2A241F"/>
-          <circle cx="190" cy="160" r="18" fill="#1E1A17" opacity=".15"/>
-          <circle cx="190" cy="200" r="18" fill="#1E1A17" opacity=".15"/>
-        </g>
-        <g>
-          <rect x="260" y="150" width="58" height="100" rx="10" fill="#2F4A3E"/>
-          <rect x="270" y="130" width="38" height="24" rx="6" fill="#2A241F"/>
-          <path d="M270 190 h38 M270 210 h38" stroke="#F6EFE4" stroke-width="4" stroke-linecap="round" opacity=".4"/>
-        </g>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- ============ MENU ============ -->
-<section id="menu" class="py-20 md:py-28" style="background:var(--ink)">
-  <div class="max-w-6xl mx-auto px-5 md:px-8">
-    <div class="flex items-end justify-between mb-10 flex-wrap gap-6">
-      <div>
-        <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--turmeric)">Order No. 002 — Today's Ticket</p>
-        <h2 class="font-display font-bold text-4xl md:text-5xl" style="color:var(--paper)">The Menu</h2>
-      </div>
-      <span class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium" style="background:var(--leaf); color:var(--ink)">
-        <i data-lucide="leaf" class="w-4 h-4"></i> Everything here is vegetarian
-      </span>
-    </div>
-
-    <div id="offers-section" class="hidden mb-10">
-      <div id="offers-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-    </div>
-
-    <div id="categories-container" class="flex gap-2 overflow-x-auto pb-4 mb-6">
-      <button onclick="filterCategory('all')" class="category-btn active px-4 py-2 rounded-full text-sm font-semibold border shrink-0 transition" style="border-color:#4A3F35; color:var(--paper)">
-        All Items
-      </button>
-    </div>
-
-    <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
-  </div>
-</section>
-
-<!-- ============ WHY US ============ -->
-<section id="why-us" class="max-w-6xl mx-auto px-5 md:px-8 py-20 md:py-28">
-  <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--chili)">Order No. 003 — Why FoodyVilla</p>
-  <h2 class="font-display font-bold text-4xl md:text-5xl mb-12">Nothing hidden in the gravy.</h2>
-
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
-    <div class="ticket p-6 text-center" style="--ink-bg:var(--paper)">
-      <i data-lucide="leaf" class="w-7 h-7 mx-auto mb-3" style="color:var(--bottle)"></i>
-      <h3 class="font-display font-bold mb-1">100% Vegetarian</h3>
-      <p class="text-xs" style="color:#7A6C5D">No meat, no eggs, ever — a fully veg kitchen and menu.</p>
-    </div>
-    <div class="ticket p-6 text-center" style="--ink-bg:var(--paper)">
-      <i data-lucide="sprout" class="w-7 h-7 mx-auto mb-3" style="color:var(--bottle)"></i>
-      <h3 class="font-display font-bold mb-1">Fresh Daily</h3>
-      <p class="text-xs" style="color:#7A6C5D">Produce and paneer sourced and prepped every morning.</p>
-    </div>
-    <div class="ticket p-6 text-center" style="--ink-bg:var(--paper)">
-      <i data-lucide="flame" class="w-7 h-7 mx-auto mb-3" style="color:var(--chili)"></i>
-      <h3 class="font-display font-bold mb-1">Made to Order</h3>
-      <p class="text-xs" style="color:#7A6C5D">Nothing pre-cooked and held — your ticket fires your plate.</p>
-    </div>
-    <div class="ticket p-6 text-center" style="--ink-bg:var(--paper)">
-      <i data-lucide="shield-check" class="w-7 h-7 mx-auto mb-3" style="color:var(--turmeric)"></i>
-      <h3 class="font-display font-bold mb-1">Hygienic Kitchen</h3>
-      <p class="text-xs" style="color:#7A6C5D">Tracked prep and service from order to table.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ TESTIMONIALS ============ -->
-<section class="py-20 md:py-28" style="background:var(--paper-dim)">
-  <div class="max-w-6xl mx-auto px-5 md:px-8">
-    <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--chili)">Order No. 004 — Guest Notes</p>
-    <h2 class="font-display font-bold text-4xl md:text-5xl mb-12">What the table says.</h2>
-
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="ticket p-6" style="--ink-bg:var(--paper-dim)">
-        <p class="font-display text-lg leading-snug mb-4">"Ordered the paneer thali twice this week. Everything arrives hot and exactly on time."</p>
-        <p class="font-mono text-xs uppercase tracking-widest" style="color:#7A6C5D">— Priya S., Regular</p>
-      </div>
-      <div class="ticket p-6" style="--ink-bg:var(--paper-dim)">
-        <p class="font-display text-lg leading-snug mb-4">"Best pure veg option in the area. The dal makhani alone is worth the trip."</p>
-        <p class="font-mono text-xs uppercase tracking-widest" style="color:#7A6C5D">— Rohit M., Weekend regular</p>
-      </div>
-      <div class="ticket p-6" style="--ink-bg:var(--paper-dim)">
-        <p class="font-display text-lg leading-snug mb-4">"Booked a table for eight on short notice. Smooth from the first call to the final bill."</p>
-        <p class="font-mono text-xs uppercase tracking-widest" style="color:#7A6C5D">— Ananya K., Family celebration</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CONTACT / VISIT ============ -->
-<section id="contact" class="py-20 md:py-28" style="background:var(--ink)">
-  <div class="max-w-6xl mx-auto px-5 md:px-8 grid md:grid-cols-2 gap-12 items-center">
-    <div>
-      <p class="font-mono text-xs tracking-[0.25em] uppercase mb-3" style="color:var(--turmeric)">Order No. 005 — Find Us</p>
-      <h2 class="font-display font-bold text-4xl md:text-5xl mb-8" style="color:var(--paper)">Come sit at the table.</h2>
-
-      <div class="space-y-5 font-medium" style="color:var(--paper-dim)">
-        <div class="flex items-start gap-3">
-          <i data-lucide="map-pin" class="w-5 h-5 mt-0.5 shrink-0" style="color:var(--turmeric)"></i>
-          <span id="contact-address">Raipur, Chhattisgarh, India</span>
-        </div>
-        <div class="flex items-start gap-3">
-          <i data-lucide="clock" class="w-5 h-5 mt-0.5 shrink-0" style="color:var(--turmeric)"></i>
-          <span id="contact-timing">Open daily, 11:00 AM – 11:00 PM</span>
-        </div>
-        <div class="flex items-start gap-3">
-          <i data-lucide="phone" class="w-5 h-5 mt-0.5 shrink-0" style="color:var(--turmeric)"></i>
-          <span id="contact-phone">+91 00000 00000</span>
-        </div>
-      </div>
-
-      <div class="flex gap-3 mt-8">
-        <a href="#" class="w-11 h-11 rounded-full border flex items-center justify-center hover:bg-white/10 transition" style="border-color:#4A3F35"><i data-lucide="instagram" class="w-4 h-4" style="color:var(--paper)"></i></a>
-        <a href="#" class="w-11 h-11 rounded-full border flex items-center justify-center hover:bg-white/10 transition" style="border-color:#4A3F35"><i data-lucide="facebook" class="w-4 h-4" style="color:var(--paper)"></i></a>
-        <a href="#" class="w-11 h-11 rounded-full border flex items-center justify-center hover:bg-white/10 transition" style="border-color:#4A3F35"><i data-lucide="phone-call" class="w-4 h-4" style="color:var(--paper)"></i></a>
-      </div>
-    </div>
-
-    <!-- Original SVG illustration: map pin, no external map embed -->
-    <div class="flex justify-center">
-      <svg viewBox="0 0 320 320" class="w-full max-w-xs">
-        <circle cx="160" cy="170" r="120" fill="none" stroke="#3A322A" stroke-width="2" stroke-dasharray="3 8"/>
-        <circle cx="160" cy="170" r="80" fill="none" stroke="#3A322A" stroke-width="2" stroke-dasharray="3 8"/>
-        <path d="M160 90 C 120 90, 100 120, 100 155 C 100 200, 160 250, 160 250 C 160 250, 220 200, 220 155 C 220 120, 200 90, 160 90 Z" fill="var(--chili)"/>
-        <circle cx="160" cy="152" r="24" fill="var(--paper)"/>
-        <circle cx="160" cy="152" r="10" fill="var(--turmeric)"/>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FOOTER ============ -->
-<footer class="py-10" style="background:#151210">
-  <div class="max-w-6xl mx-auto px-5 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-    <span class="font-display font-bold text-lg" style="color:var(--paper)">FoodyVilla</span>
-    <p class="font-mono text-[11px]" style="color:#7A6C5D">© <span id="footer-year"></span> FoodyVilla · Pure Vegetarian Kitchen</p>
-  </div>
-</footer>
-
-<!-- ============ CART MODAL ============ -->
-<div id="cart-modal" class="fixed inset-0 z-[90] hidden">
-  <div onclick="toggleCartModal(false)" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-  <div class="absolute right-0 top-0 h-full w-full max-w-md flex flex-col z-10" style="background:var(--paper)">
-    <div class="p-5 border-b flex items-center justify-between" style="border-color:var(--line)">
-      <h3 class="font-display font-bold text-xl flex items-center gap-2">
-        <i data-lucide="shopping-cart" class="w-5 h-5" style="color:var(--chili)"></i> Your Order
-      </h3>
-      <button onclick="toggleCartModal(false)" class="p-2 rounded-lg hover:bg-black/5"><i data-lucide="x" class="w-5 h-5"></i></button>
-    </div>
-
-    <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-1"></div>
-
-    <div class="p-5 border-t space-y-3" style="border-color:var(--line); background:var(--paper-dim)">
-      <div class="flex justify-between font-display font-bold text-lg">
-        <span>Total</span>
-        <span id="cart-total-price" class="font-mono">₹0.00</span>
-      </div>
-      <button onclick="placeOrder()" class="w-full py-3.5 rounded-xl font-bold text-center transition hover:brightness-110" style="background:var(--chili); color:var(--paper)">
-        Place Order
-      </button>
-    </div>
-  </div>
-</div>
-
-<script>
-  const FUNCTION_URL = "https://qxqnwfcljizyscrqkntd.supabase.co/functions/v1/public_website";
-
-  let state = { outlet: null, categories: [], banners: [], offers: [], menu: [], cart: {}, selectedCategory: 'all' };
-
-  // Icon shown per category — no photos anywhere, just lucide glyphs
-  const CATEGORY_ICON = {
-    1: 'flame', 2: 'soup', 3: 'circle-dot', 4: 'chef-hat',
-    5: 'salad', 6: 'wheat', 7: 'ice-cream-cone', 8: 'coffee'
-  };
-  function categoryIcon(catId) { return CATEGORY_ICON[catId] || 'utensils'; }
-
-  // Full vegetarian menu — used until your live Supabase menu responds
-  const FALLBACK = {
-    outlet: {
-      name: "FoodyVilla", opens_at: "11:00:00", closes_at: "23:00:00", logo_url: null,
-      address: "MG Road, Raipur, Chhattisgarh", phone: "+91 98765 43210"
-    },
-    categories: [
-      { id: 1, name: "Starters", emoji: "🥟" },
-      { id: 2, name: "Soups", emoji: "🥣" },
-      { id: 3, name: "South Indian", emoji: "🫓" },
-      { id: 4, name: "Paneer Specials", emoji: "🧀" },
-      { id: 5, name: "Veg Curries", emoji: "🍛" },
-      { id: 6, name: "Dal & Rice", emoji: "🍚" },
-      { id: 7, name: "Breads", emoji: "🥖" },
-      { id: 8, name: "Desserts", emoji: "🍮" },
-      { id: 9, name: "Beverages", emoji: "🥤" }
-    ],
-    banners: [],
-    offers: [
-      { title: "Weekend Thali Combo", description: "Unlimited veg thali, served fresh — every weekend." },
-      { title: "Family Feast Deal", description: "Order for 4+ and save 15% on mains." }
-    ],
-    menu: [
-      { menu_item_id: 1, category_id: 1, name: "Paneer Tikka", description: "Char-grilled cottage cheese, smoked and spiced.", is_bestseller: true, in_stock: true, pricing: { final_price: 220, original_price: 260, discount_percentage: 15 } },
-      { menu_item_id: 2, category_id: 1, name: "Hara Bhara Kebab", description: "Spinach and green pea patties, shallow fried.", is_bestseller: false, in_stock: true, pricing: { final_price: 180, original_price: 180, discount_percentage: 0 } },
-      { menu_item_id: 3, category_id: 1, name: "Veg Manchurian (Dry)", description: "Crisp vegetable dumplings tossed in a spiced garlic sauce.", is_bestseller: false, in_stock: true, pricing: { final_price: 190, original_price: 190, discount_percentage: 0 } },
-      { menu_item_id: 4, category_id: 1, name: "Chilli Paneer Dry", description: "Battered paneer wok-tossed with peppers and onions.", is_bestseller: false, in_stock: true, pricing: { final_price: 230, original_price: 230, discount_percentage: 0 } },
-      { menu_item_id: 5, category_id: 2, name: "Tomato Basil Shorba", description: "Slow-simmered tomato broth, finished with fresh basil.", is_bestseller: false, in_stock: true, pricing: { final_price: 120, original_price: 120, discount_percentage: 0 } },
-      { menu_item_id: 6, category_id: 2, name: "Sweet Corn Veg Soup", description: "Classic comfort soup loaded with corn and vegetables.", is_bestseller: false, in_stock: true, pricing: { final_price: 130, original_price: 130, discount_percentage: 0 } },
-      { menu_item_id: 7, category_id: 3, name: "Masala Dosa", description: "Crisp rice crepe filled with spiced potato masala.", is_bestseller: true, in_stock: true, pricing: { final_price: 140, original_price: 140, discount_percentage: 0 } },
-      { menu_item_id: 8, category_id: 3, name: "Rava Idli (4 pcs)", description: "Steamed semolina cakes, served with sambar and chutney.", is_bestseller: false, in_stock: true, pricing: { final_price: 110, original_price: 110, discount_percentage: 0 } },
-      { menu_item_id: 9, category_id: 3, name: "Uttapam", description: "Thick rice pancake topped with onion, tomato and chilli.", is_bestseller: false, in_stock: true, pricing: { final_price: 150, original_price: 150, discount_percentage: 0 } },
-      { menu_item_id: 10, category_id: 4, name: "Paneer Butter Masala", description: "Cottage cheese in a rich tomato-butter gravy.", is_bestseller: true, in_stock: true, pricing: { final_price: 260, original_price: 290, discount_percentage: 10 } },
-      { menu_item_id: 11, category_id: 4, name: "Kadai Paneer", description: "Paneer and peppers tossed in a coarse kadai masala.", is_bestseller: false, in_stock: true, pricing: { final_price: 250, original_price: 250, discount_percentage: 0 } },
-      { menu_item_id: 12, category_id: 4, name: "Palak Paneer", description: "Cottage cheese cubes in a smooth spiced spinach gravy.", is_bestseller: false, in_stock: true, pricing: { final_price: 240, original_price: 240, discount_percentage: 0 } },
-      { menu_item_id: 13, category_id: 5, name: "Malai Kofta", description: "Fried vegetable-paneer dumplings in a creamy cashew gravy.", is_bestseller: false, in_stock: true, pricing: { final_price: 240, original_price: 240, discount_percentage: 0 } },
-      { menu_item_id: 14, category_id: 5, name: "Mixed Veg Curry", description: "Seasonal vegetables simmered in a light onion-tomato gravy.", is_bestseller: false, in_stock: true, pricing: { final_price: 200, original_price: 200, discount_percentage: 0 } },
-      { menu_item_id: 15, category_id: 5, name: "Bhindi Masala", description: "Okra stir-fried with onions and everyday spices.", is_bestseller: false, in_stock: false, pricing: { final_price: 180, original_price: 180, discount_percentage: 0 } },
-      { menu_item_id: 16, category_id: 6, name: "Dal Makhani", description: "Slow-cooked black lentils, finished with cream.", is_bestseller: true, in_stock: true, pricing: { final_price: 190, original_price: 190, discount_percentage: 0 } },
-      { menu_item_id: 17, category_id: 6, name: "Dal Tadka", description: "Yellow lentils tempered with cumin, garlic and ghee.", is_bestseller: false, in_stock: true, pricing: { final_price: 160, original_price: 160, discount_percentage: 0 } },
-      { menu_item_id: 18, category_id: 6, name: "Veg Biryani", description: "Fragrant basmati, slow dum-cooked with vegetables.", is_bestseller: false, in_stock: true, pricing: { final_price: 220, original_price: 220, discount_percentage: 0 } },
-      { menu_item_id: 19, category_id: 6, name: "Jeera Rice", description: "Basmati rice tempered with cumin and ghee.", is_bestseller: false, in_stock: true, pricing: { final_price: 150, original_price: 150, discount_percentage: 0 } },
-      { menu_item_id: 20, category_id: 7, name: "Butter Naan", description: "Tandoor-fired flatbread, brushed with butter.", is_bestseller: false, in_stock: true, pricing: { final_price: 45, original_price: 45, discount_percentage: 0 } },
-      { menu_item_id: 21, category_id: 7, name: "Garlic Naan", description: "Tandoor-fired flatbread topped with garlic and coriander.", is_bestseller: false, in_stock: true, pricing: { final_price: 55, original_price: 55, discount_percentage: 0 } },
-      { menu_item_id: 22, category_id: 7, name: "Laccha Paratha", description: "Layered, flaky whole-wheat flatbread.", is_bestseller: false, in_stock: true, pricing: { final_price: 50, original_price: 50, discount_percentage: 0 } },
-      { menu_item_id: 23, category_id: 8, name: "Gulab Jamun (2 pcs)", description: "Warm milk dumplings soaked in cardamom syrup.", is_bestseller: true, in_stock: true, pricing: { final_price: 90, original_price: 90, discount_percentage: 0 } },
-      { menu_item_id: 24, category_id: 8, name: "Rasmalai (2 pcs)", description: "Soft cheese discs in saffron-cardamom milk.", is_bestseller: false, in_stock: true, pricing: { final_price: 110, original_price: 110, discount_percentage: 0 } },
-      { menu_item_id: 25, category_id: 8, name: "Gajar Ka Halwa", description: "Slow-cooked carrot pudding with ghee and nuts.", is_bestseller: false, in_stock: true, pricing: { final_price: 130, original_price: 130, discount_percentage: 0 } },
-      { menu_item_id: 26, category_id: 9, name: "Masala Chaas", description: "Spiced buttermilk, served chilled.", is_bestseller: false, in_stock: true, pricing: { final_price: 60, original_price: 60, discount_percentage: 0 } },
-      { menu_item_id: 27, category_id: 9, name: "Sweet Lassi", description: "Thick, chilled yoghurt drink, lightly sweetened.", is_bestseller: false, in_stock: true, pricing: { final_price: 90, original_price: 90, discount_percentage: 0 } },
-      { menu_item_id: 28, category_id: 9, name: "Filter Coffee", description: "South Indian style, brewed strong and frothed.", is_bestseller: false, in_stock: true, pricing: { final_price: 60, original_price: 60, discount_percentage: 0 } }
-    ]
-  };
-
-  const MARQUEE_ITEMS = ["100% Pure Vegetarian", "★", "No Frozen Shortcuts", "★", "Table & Takeaway", "★", "Order Tracked Live", "★", "Made After You Order", "★"];
-
-  async function init() {
-    try {
-      const res = await fetch(FUNCTION_URL);
-      if (!res.ok) throw new Error("no live data");
-      const data = await res.json();
-      state.outlet = data.outlet || FALLBACK.outlet;
-      state.categories = (data.categories && data.categories.length) ? data.categories : FALLBACK.categories;
-      state.banners = data.banners || [];
-      state.offers = (data.offers && data.offers.length) ? data.offers : FALLBACK.offers;
-      state.menu = (data.menu && data.menu.length) ? data.menu : FALLBACK.menu;
-    } catch (err) {
-      state.outlet = FALLBACK.outlet;
-      state.categories = FALLBACK.categories;
-      state.offers = FALLBACK.offers;
-      state.menu = FALLBACK.menu;
-    } finally {
-      renderOutletDetails();
-      renderOffers();
-      renderCategories();
-      renderMenu();
-      buildMarquee();
-      document.getElementById("loading").classList.add("hidden");
-      lucide.createIcons();
-      setupScrollHeader();
-      setupReveal();
-    }
-  }
-
-  function renderOutletDetails() {
-    if (!state.outlet) return;
-    document.title = state.outlet.name + " — Pure Vegetarian Kitchen";
-    document.getElementById("brand-name").innerText = state.outlet.name;
-    document.getElementById("hero-outlet-name").innerText = state.outlet.name;
-    if (state.outlet.opens_at && state.outlet.closes_at) {
-      document.getElementById("contact-timing").innerText = `Open daily, ${fmtTime(state.outlet.opens_at)} – ${fmtTime(state.outlet.closes_at)}`;
-    }
-    if (state.outlet.address) document.getElementById("contact-address").innerText = state.outlet.address;
-    if (state.outlet.phone) document.getElementById("contact-phone").innerText = state.outlet.phone;
-    if (state.outlet.logo_url) {
-      const logo = document.getElementById("outlet-logo");
-      logo.src = state.outlet.logo_url;
-      logo.classList.remove("hidden");
-    }
-  }
-
-  function fmtTime(t) {
-    const [h, m] = t.split(":").map(Number);
-    const ampm = h >= 12 ? "PM" : "AM";
-    const h12 = h % 12 === 0 ? 12 : h % 12;
-    return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
-  }
-
-  function buildMarquee() {
-    const html = MARQUEE_ITEMS.map(t => `<span class="${t==='★' ? '' : 'font-display'}" style="${t==='★' ? 'color:var(--turmeric)' : ''}">${t}</span>`).join('');
-    document.getElementById("marquee-a").innerHTML = html;
-    document.getElementById("marquee-b").innerHTML = html;
-  }
-
-  function renderOffers() {
-    if (!state.offers.length) return;
-    document.getElementById("offers-section").classList.remove("hidden");
-    document.getElementById("offers-container").innerHTML = state.offers.map(o => `
-      <div class="ticket p-4 flex gap-4 items-center" style="--ink-bg:var(--ink)">
-        <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0" style="background:var(--turmeric)">
-          <i data-lucide="tag" class="w-6 h-6" style="color:var(--ink)"></i>
-        </div>
+  <!-- Header / Navigation -->
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img id="outlet-logo" src="" alt="Restaurant Logo" class="w-10 h-10 rounded-full object-cover bg-slate-100 hidden ring-2 ring-amber-500/20" />
         <div>
-          <h4 class="font-display font-bold" style="color:var(--paper)">${o.title}</h4>
-          <p class="text-xs mt-1" style="color:var(--paper-dim)">${o.description || ''}</p>
+          <h1 id="outlet-name" class="font-bold text-slate-900 leading-tight">Restaurant Name</h1>
+          <p id="outlet-timing" class="text-xs text-slate-500 flex items-center gap-1">
+            <i data-lucide="clock" class="w-3 h-3 text-amber-500"></i> Open Now
+          </p>
         </div>
       </div>
-    `).join('');
-    lucide.createIcons();
-  }
+      
+      <!-- Cart Trigger Button -->
+      <button onclick="toggleCartModal(true)" class="relative bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-4 py-2.5 rounded-xl font-medium transition shadow-sm flex items-center gap-2">
+        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+        <span class="text-sm font-bold" id="cart-btn-text">Cart (0)</span>
+      </button>
+    </div>
+  </header>
 
-  function renderCategories() {
-    const container = document.getElementById("categories-container");
-    container.innerHTML = `<button onclick="filterCategory('all')" id="cat-btn-all" class="category-btn active px-4 py-2 rounded-full text-sm font-semibold border shrink-0 transition" style="border-color:#4A3F35; color:var(--paper)">All Items</button>` +
-      state.categories.map(c => `
-        <button onclick="filterCategory(${c.id})" id="cat-btn-${c.id}" class="category-btn px-4 py-2 rounded-full text-sm font-semibold border shrink-0 transition" style="border-color:#4A3F35; color:var(--paper)">
-          ${c.emoji || ''} ${c.name}
+  <main class="max-w-6xl mx-auto px-4 pt-6 space-y-10">
+
+    <!-- Hero Banner Slider -->
+    <section id="banners-section" class="hidden">
+      <div class="swiper bannerSwiper rounded-2xl overflow-hidden shadow-md">
+        <div class="swiper-wrapper" id="banners-wrapper">
+          <!-- Banner Slides dynamically injected -->
+        </div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next !text-white !w-8 !h-8 after:!text-sm bg-black/30 hover:bg-black/50 rounded-full"></div>
+        <div class="swiper-button-prev !text-white !w-8 !h-8 after:!text-sm bg-black/30 hover:bg-black/50 rounded-full"></div>
+      </div>
+    </section>
+
+    <!-- Offers & Promotions Slider -->
+    <section id="offers-section" class="hidden space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="sparkles" class="w-5 h-5 text-amber-500"></i> Exclusive Offers
+        </h2>
+      </div>
+      <div class="swiper offerSwiper">
+        <div class="swiper-wrapper" id="offers-wrapper">
+          <!-- Offer Slides dynamically injected -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Bestsellers Section Slider -->
+    <section id="bestsellers-section" class="hidden space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="flame" class="w-5 h-5 text-amber-500"></i> Popular Bestsellers
+        </h2>
+      </div>
+      <div class="swiper bestsellerSwiper">
+        <div class="swiper-wrapper" id="bestsellers-wrapper">
+          <!-- Bestseller items dynamically injected -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Menu Area with Floating Filter Bar -->
+    <section class="space-y-6 pt-2">
+      <!-- Sticky Category Bar -->
+      <div class="sticky top-16 z-20 bg-slate-50/95 backdrop-blur-md py-3 -mx-4 px-4 border-b border-slate-200/60 shadow-xs flex items-center justify-between gap-4">
+        <!-- Horizontal Scrollable Categories -->
+        <div id="categories-container" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          <button onclick="filterCategory('all')" class="category-btn active px-4 py-2 rounded-xl text-sm font-semibold bg-amber-500 text-white shadow-xs shrink-0 transition">
+            All Items
+          </button>
+          <!-- Injected dynamically -->
+        </div>
+
+        <!-- Veg Only Toggle Switch -->
+        <label class="flex items-center gap-2 cursor-pointer bg-white px-3 py-2 rounded-xl border border-slate-200/80 text-xs md:text-sm font-semibold shrink-0 shadow-xs">
+          <input type="checkbox" id="veg-toggle" onchange="renderMenu()" class="sr-only peer" />
+          <span class="w-3.5 h-3.5 rounded-xs border-2 border-green-600 flex items-center justify-center">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+          </span>
+          <span class="text-slate-700 peer-checked:text-green-700 select-none">Veg Only</span>
+        </label>
+      </div>
+
+      <!-- Menu Grid -->
+      <div>
+        <h2 class="text-xl font-bold text-slate-900 mb-4" id="menu-title">Full Menu</h2>
+        <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Menu Items dynamically injected -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cart Slide-Over Modal -->
+  <div id="cart-modal" class="fixed inset-0 z-50 hidden">
+    <div onclick="toggleCartModal(false)" class="absolute inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"></div>
+    
+    <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col z-10">
+      <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <h3 class="font-bold text-lg text-slate-900 flex items-center gap-2">
+          <i data-lucide="shopping-cart" class="w-5 h-5 text-amber-500"></i> Your Cart
+        </h3>
+        <button onclick="toggleCartModal(false)" class="p-2 hover:bg-slate-200/60 rounded-xl text-slate-400 hover:text-slate-600 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
-      `).join('');
-  }
+      </div>
 
-  function renderMenu() {
-    const menuGrid = document.getElementById("menu-grid");
-    const filtered = state.menu.filter(item => state.selectedCategory === 'all' || item.category_id === state.selectedCategory);
+      <!-- Items List -->
+      <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3 divide-y divide-slate-100">
+        <!-- Injected dynamically -->
+      </div>
 
-    if (!filtered.length) {
-      menuGrid.innerHTML = `<div class="col-span-full py-16 text-center font-mono text-sm" style="color:var(--paper-dim)">No items on this ticket yet.</div>`;
-      return;
+      <!-- Total & Action Footer -->
+      <div class="p-4 border-t border-slate-100 bg-slate-50 space-y-3">
+        <div class="flex justify-between font-bold text-lg text-slate-900">
+          <span>Total:</span>
+          <span id="cart-total-price">₹0.00</span>
+        </div>
+        <button onclick="placeOrder()" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl font-bold text-center transition shadow-md">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Swiper.js Script (Slider Engine) -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <script>
+    // --- CONFIGURATION ---
+    const FUNCTION_URL = "https://<your-project-ref>.supabase.co/functions/v1/get-public-website-data";
+
+    let state = {
+      outlet: null,
+      categories: [],
+      banners: [],
+      offers: [],
+      menu: [],
+      cart: {},
+      selectedCategory: 'all'
+    };
+
+    // --- INIT ---
+    async function init() {
+      try {
+        const res = await fetch(FUNCTION_URL);
+        if (!res.ok) throw new Error("Failed to load restaurant data.");
+        
+        const data = await res.json();
+        state.outlet = data.outlet;
+        state.categories = data.categories;
+        state.banners = data.banners;
+        state.offers = data.offers;
+        state.menu = data.menu;
+
+        renderOutletHeader();
+        renderBanners();
+        renderOffers();
+        renderBestsellers();
+        renderCategories();
+        renderMenu();
+
+      } catch (err) {
+        alert("Error: " + err.message);
+      } finally {
+        document.getElementById("loading").classList.add("hidden");
+        lucide.createIcons();
+      }
     }
 
-    menuGrid.innerHTML = filtered.map(item => {
-      const cartQty = state.cart[item.menu_item_id]?.qty || 0;
-      const icon = categoryIcon(item.category_id);
+    // --- RENDERERS ---
+    function renderOutletHeader() {
+      if (!state.outlet) return;
+      document.title = state.outlet.name;
+      document.getElementById("outlet-name").innerText = state.outlet.name;
+      
+      if (state.outlet.opens_at && state.outlet.closes_at) {
+        document.getElementById("outlet-timing").innerHTML = `
+          <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-500"></i> ${state.outlet.opens_at.slice(0, 5)} - ${state.outlet.closes_at.slice(0, 5)}
+        `;
+      }
+      if (state.outlet.logo_url) {
+        const logo = document.getElementById("outlet-logo");
+        logo.src = state.outlet.logo_url;
+        logo.classList.remove("hidden");
+      }
+    }
 
-      return `
-        <div class="ticket p-4 flex gap-4 items-start ${!item.in_stock ? 'opacity-50' : ''}" style="--ink-bg:var(--ink)">
-          <div class="flex-1 space-y-1.5">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full border-2 border-green-500 flex items-center justify-center p-0.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-              </span>
-              ${item.is_bestseller ? `<span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full" style="background:var(--turmeric); color:var(--ink)">BESTSELLER</span>` : ''}
-            </div>
-            <h3 class="font-display font-bold text-lg leading-snug" style="color:var(--paper)">${item.name}</h3>
-            <p class="text-xs" style="color:#9A8C7A">${item.description || ''}</p>
+    // 1. Banner Slider
+    function renderBanners() {
+      if (!state.banners || !state.banners.length) return;
+      document.getElementById("banners-section").classList.remove("hidden");
 
-            <div class="pt-2 flex items-baseline gap-2 font-mono">
-              <span class="font-bold" style="color:var(--turmeric)">₹${item.pricing.final_price}</span>
-              ${item.pricing.discount_percentage > 0 ? `
-                <span class="text-xs line-through" style="color:#6B5F52">₹${item.pricing.original_price}</span>
-                <span class="text-xs font-semibold" style="color:#4ADE80">${item.pricing.discount_percentage}% OFF</span>
-              ` : ''}
-            </div>
-          </div>
-
-          <div class="w-24 flex flex-col items-center gap-2 shrink-0">
-            <div class="w-24 h-20 rounded-xl flex items-center justify-center" style="background:#2A241F">
-              <i data-lucide="${icon}" class="w-8 h-8" style="color:var(--turmeric)"></i>
-            </div>
-
-            ${!item.in_stock ? `
-              <span class="text-[10px] font-mono font-bold py-1" style="color:var(--chili)">SOLD OUT</span>
-            ` : cartQty === 0 ? `
-              <button onclick="updateCart(${item.menu_item_id}, 1)" class="w-full py-1.5 rounded-lg text-xs font-bold transition hover:brightness-110" style="background:var(--chili); color:var(--paper)">
-                ADD
-              </button>
-            ` : `
-              <div class="flex items-center justify-between w-full rounded-lg px-2 py-1 text-xs font-bold font-mono" style="background:var(--chili); color:var(--paper)">
-                <button onclick="updateCart(${item.menu_item_id}, -1)">-</button>
-                <span>${cartQty}</span>
-                <button onclick="updateCart(${item.menu_item_id}, 1)">+</button>
+      const wrapper = document.getElementById("banners-wrapper");
+      wrapper.innerHTML = state.banners.map(b => `
+        <div class="swiper-slide">
+          <div class="relative w-full h-44 sm:h-64 md:h-80 bg-slate-900">
+            <img src="${b.img_url}" class="w-full h-full object-cover opacity-90"/>
+            ${b.title ? `
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6">
+                <h3 class="text-white text-lg md:text-2xl font-bold">${b.title}</h3>
               </div>
-            `}
+            ` : ''}
           </div>
         </div>
-      `;
-    }).join('');
+      `).join('');
 
-    lucide.createIcons();
-  }
+      // Initialize Banner Swiper
+      new Swiper(".bannerSwiper", {
+        autoplay: { delay: 4000, disableOnInteraction: false },
+        loop: true,
+        pagination: { el: ".swiper-pagination", clickable: true },
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+      });
+    }
 
-  function updateCart(menuItemId, change) {
-    const item = state.menu.find(m => m.menu_item_id === menuItemId);
-    if (!item) return;
-    const currentQty = state.cart[menuItemId]?.qty || 0;
-    const newQty = currentQty + change;
-    if (newQty <= 0) delete state.cart[menuItemId];
-    else state.cart[menuItemId] = { item, qty: newQty };
-    renderMenu();
-    renderCartDrawer();
-  }
+    // 2. Special Offers Slider
+    function renderOffers() {
+      if (!state.offers || !state.offers.length) return;
+      document.getElementById("offers-section").classList.remove("hidden");
 
-  function renderCartDrawer() {
-    const container = document.getElementById("cart-items");
-    const cartKeys = Object.keys(state.cart);
-    let totalItems = 0, totalPrice = 0;
-
-    if (!cartKeys.length) {
-      container.innerHTML = `<div class="text-center py-16 font-mono text-sm" style="color:#9A8C7A">Your ticket is empty.</div>`;
-    } else {
-      container.innerHTML = cartKeys.map(key => {
-        const { item, qty } = state.cart[key];
-        const itemTotal = item.pricing.final_price * qty;
-        totalItems += qty; totalPrice += itemTotal;
-        return `
-          <div class="py-3 dotted-rule flex items-center justify-between">
+      const wrapper = document.getElementById("offers-wrapper");
+      wrapper.innerHTML = state.offers.map(o => `
+        <div class="swiper-slide !w-72">
+          <div class="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-300/40 p-3.5 rounded-2xl flex gap-3 items-center">
+            ${o.img_url ? `<img src="${o.img_url}" class="w-14 h-14 rounded-xl object-cover shrink-0 shadow-xs"/>` : ''}
             <div>
-              <h4 class="font-semibold text-sm">${item.name}</h4>
-              <p class="text-xs font-mono" style="color:#7A6C5D">₹${item.pricing.final_price} × ${qty}</p>
+              <h4 class="font-bold text-amber-950 text-sm leading-tight">${o.title}</h4>
+              <p class="text-xs text-amber-800/80 mt-1 line-clamp-2">${o.description || ''}</p>
             </div>
-            <div class="flex items-center gap-3">
-              <span class="font-bold text-sm font-mono">₹${itemTotal.toFixed(2)}</span>
-              <div class="flex items-center gap-2 rounded-lg px-2 py-1 text-xs font-bold font-mono" style="background:var(--paper-dim)">
-                <button onclick="updateCart(${item.menu_item_id}, -1)" class="px-1">-</button>
-                <span>${qty}</span>
-                <button onclick="updateCart(${item.menu_item_id}, 1)" class="px-1">+</button>
+          </div>
+        </div>
+      `).join('');
+
+      // Initialize Offers Carousel
+      new Swiper(".offerSwiper", {
+        slidesPerView: "auto",
+        spaceBetween: 12,
+        freeMode: true
+      });
+    }
+
+    // 3. Bestsellers Slider
+    function renderBestsellers() {
+      const bestsellers = state.menu.filter(i => i.is_bestseller);
+      if (!bestsellers.length) return;
+      document.getElementById("bestsellers-section").classList.remove("hidden");
+
+      const wrapper = document.getElementById("bestsellers-wrapper");
+      wrapper.innerHTML = bestsellers.map(item => {
+        const firstImg = Array.isArray(item.images) && item.images.length ? item.images[0] : '';
+        return `
+          <div class="swiper-slide !w-44">
+            <div class="bg-white p-2.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between h-full">
+              <div>
+                <div class="relative w-full h-28 rounded-xl overflow-hidden mb-2 bg-slate-100">
+                  ${firstImg ? `<img src="${firstImg}" class="w-full h-full object-cover"/>` : ''}
+                  <span class="absolute top-1.5 left-1.5 bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-md shadow-xs">BESTSELLER</span>
+                </div>
+                <h4 class="font-bold text-xs text-slate-900 line-clamp-1">${item.name}</h4>
+                <p class="font-black text-slate-900 text-xs mt-0.5">₹${item.pricing.final_price}</p>
               </div>
+              <button onclick="updateCart(${item.menu_item_id}, 1)" class="w-full mt-2 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition">
+                + ADD
+              </button>
             </div>
           </div>
         `;
       }).join('');
+
+      new Swiper(".bestsellerSwiper", {
+        slidesPerView: "auto",
+        spaceBetween: 12,
+        freeMode: true
+      });
     }
 
-    document.getElementById("cart-btn-text").innerText = `CART · ${totalItems}`;
-    document.getElementById("cart-total-price").innerText = `₹${totalPrice.toFixed(2)}`;
-  }
+    // 4. Categories Tabs
+    function renderCategories() {
+      const container = document.getElementById("categories-container");
+      container.innerHTML += state.categories.map(c => `
+        <button onclick="filterCategory(${c.id})" id="cat-btn-${c.id}" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-white text-slate-700 border border-slate-200/80 hover:bg-slate-100 shrink-0 transition shadow-xs flex items-center gap-1.5">
+          <span>${c.emoji || ''}</span>
+          <span>${c.name}</span>
+        </button>
+      `).join('');
+    }
 
-  function filterCategory(catId) {
-    state.selectedCategory = catId;
-    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-    const activeBtn = catId === 'all' ? document.getElementById('cat-btn-all') : document.getElementById(`cat-btn-${catId}`);
-    if (activeBtn) activeBtn.classList.add('active');
-    renderMenu();
-  }
+    // 5. Main Menu Grid
+    function renderMenu() {
+      const menuGrid = document.getElementById("menu-grid");
+      const vegOnly = document.getElementById("veg-toggle").checked;
 
-  function toggleCartModal(show) {
-    const modal = document.getElementById("cart-modal");
-    if (show) { modal.classList.remove("hidden"); renderCartDrawer(); }
-    else modal.classList.add("hidden");
-  }
+      const filtered = state.menu.filter(item => {
+        const matchCategory = state.selectedCategory === 'all' || item.category_id === state.selectedCategory;
+        const matchVeg = !vegOnly || item.is_veg;
+        return matchCategory && matchVeg;
+      });
 
-  function placeOrder() {
-    if (!Object.keys(state.cart).length) { alert("Add items to your ticket before proceeding!"); return; }
-    alert("Order ready for checkout integration!");
-  }
-
-  function setupScrollHeader() {
-    const header = document.getElementById("site-header");
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 60) {
-        header.style.background = 'rgba(30,26,23,0.92)';
-        header.style.backdropFilter = 'blur(10px)';
-        header.style.borderBottom = '1px solid #33291f';
-      } else {
-        header.style.background = 'transparent';
-        header.style.backdropFilter = 'none';
-        header.style.borderBottom = 'none';
+      if (!filtered.length) {
+        menuGrid.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 font-medium">No items match your selected preferences.</div>`;
+        return;
       }
-    });
-  }
 
-  function setupReveal() {
-    const els = document.querySelectorAll('.reveal');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-    }, { threshold: 0.15 });
-    els.forEach(el => io.observe(el));
-  }
+      menuGrid.innerHTML = filtered.map(item => {
+        const cartQty = state.cart[item.menu_item_id]?.qty || 0;
+        const firstImg = Array.isArray(item.images) && item.images.length ? item.images[0] : null;
 
-  document.getElementById("footer-year").innerText = new Date().getFullYear();
-  init();
-</script>
+        return `
+          <div class="bg-white p-4 rounded-2xl border border-slate-200/70 shadow-xs flex gap-3.5 items-start relative ${!item.in_stock ? 'opacity-50' : ''}">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-xs border-2 ${item.is_veg ? 'border-green-600' : 'border-red-600'} flex items-center justify-center">
+                  <span class="w-1.5 h-1.5 rounded-full ${item.is_veg ? 'bg-green-600' : 'bg-red-600'}"></span>
+                </span>
+                ${item.is_bestseller ? `<span class="bg-amber-100 text-amber-800 text-[9px] font-bold px-1.5 py-0.5 rounded-md">BESTSELLER</span>` : ''}
+              </div>
+
+              <h3 class="font-bold text-slate-900 leading-snug text-sm">${item.name}</h3>
+              <p class="text-xs text-slate-500 line-clamp-2">${item.description || ''}</p>
+
+              <div class="pt-2 flex items-baseline gap-2">
+                <span class="font-bold text-slate-900 text-base">₹${item.pricing.final_price}</span>
+                ${item.pricing.discount_percentage > 0 ? `
+                  <span class="text-xs text-slate-400 line-through">₹${item.pricing.original_price}</span>
+                  <span class="text-xs font-semibold text-green-600">${item.pricing.discount_percentage}% OFF</span>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Image & Add/Quantity Actions -->
+            <div class="w-24 flex flex-col items-center gap-2 shrink-0">
+              ${firstImg ? `<img src="${firstImg}" class="w-24 h-20 rounded-xl object-cover bg-slate-100 shadow-xs"/>` : '<div class="w-24 h-20 bg-slate-100 rounded-xl"></div>'}
+              
+              ${!item.in_stock ? `
+                <span class="text-xs text-red-500 font-bold py-1">Out of Stock</span>
+              ` : cartQty === 0 ? `
+                <button onclick="updateCart(${item.menu_item_id}, 1)" class="w-full py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition shadow-xs">
+                  ADD
+                </button>
+              ` : `
+                <div class="flex items-center justify-between w-full bg-amber-500 text-white rounded-xl px-2 py-1 text-xs font-bold shadow-xs">
+                  <button onclick="updateCart(${item.menu_item_id}, -1)" class="px-1">-</button>
+                  <span>${cartQty}</span>
+                  <button onclick="updateCart(${item.menu_item_id}, 1)" class="px-1">+</button>
+                </div>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // --- ACTIONS ---
+    function updateCart(menuItemId, change) {
+      const item = state.menu.find(m => m.menu_item_id === menuItemId);
+      if (!item) return;
+
+      const currentQty = state.cart[menuItemId]?.qty || 0;
+      const newQty = currentQty + change;
+
+      if (newQty <= 0) {
+        delete state.cart[menuItemId];
+      } else {
+        state.cart[menuItemId] = { item, qty: newQty };
+      }
+
+      renderMenu();
+      renderCartDrawer();
+    }
+
+    function renderCartDrawer() {
+      const container = document.getElementById("cart-items");
+      const cartKeys = Object.keys(state.cart);
+
+      let totalItems = 0;
+      let totalPrice = 0;
+
+      if (cartKeys.length === 0) {
+        container.innerHTML = `<div class="text-center py-16 text-slate-400 text-sm">Your cart is currently empty.</div>`;
+      } else {
+        container.innerHTML = cartKeys.map(key => {
+          const { item, qty } = state.cart[key];
+          const itemTotal = item.pricing.final_price * qty;
+          totalItems += qty;
+          totalPrice += itemTotal;
+
+          return `
+            <div class="pt-3 flex items-center justify-between">
+              <div>
+                <h4 class="font-semibold text-sm text-slate-900">${item.name}</h4>
+                <p class="text-xs text-slate-500">₹${item.pricing.final_price} × ${qty}</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="font-bold text-sm text-slate-900">₹${itemTotal.toFixed(2)}</span>
+                <div class="flex items-center gap-2 bg-slate-100 rounded-lg px-2 py-1 text-xs font-bold">
+                  <button onclick="updateCart(${item.menu_item_id}, -1)" class="px-1 text-slate-600">-</button>
+                  <span>${qty}</span>
+                  <button onclick="updateCart(${item.menu_item_id}, 1)" class="px-1 text-slate-600">+</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      document.getElementById("cart-btn-text").innerText = `Cart (${totalItems})`;
+      document.getElementById("cart-total-price").innerText = `₹${totalPrice.toFixed(2)}`;
+    }
+
+    function filterCategory(catId) {
+      state.selectedCategory = catId;
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('bg-amber-500', 'text-white');
+        btn.classList.add('bg-white', 'text-slate-700');
+      });
+
+      const activeBtn = catId === 'all' ? document.querySelector('.category-btn') : document.getElementById(`cat-btn-${catId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-white', 'text-slate-700');
+        activeBtn.classList.add('bg-amber-500', 'text-white');
+      }
+
+      renderMenu();
+    }
+
+    function toggleCartModal(show) {
+      const modal = document.getElementById("cart-modal");
+      if (show) {
+        modal.classList.remove("hidden");
+        renderCartDrawer();
+      } else {
+        modal.classList.add("hidden");
+      }
+    }
+
+    function placeOrder() {
+      if (!Object.keys(state.cart).length) {
+        alert("Please add items to your cart first!");
+        return;
+      }
+      alert("Order ready for Razorpay checkout!");
+    }
+
+    init();
+  </script>
 </body>
 </html>
